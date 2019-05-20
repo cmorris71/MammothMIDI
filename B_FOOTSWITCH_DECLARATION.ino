@@ -77,7 +77,8 @@
   if (fsState[0] == 0 && readyToSendMidi[0] == true){
 
 /// ========= COMMAND 1 ==========================================
-      MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
+      ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
+      MIDI.sendProgramChange(25,1);
       readyToSendMidi[0] = false; // DO NOT TOUCH THIS
   }
 
@@ -95,7 +96,8 @@
 
   if (fsState[0] == 1 && readyToSendMidi[0] == true){  
 /// ========= COMMAND 2 ==========================================
-      MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
+      ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
+      MIDI.sendProgramChange(25,1);
       readyToSendMidi[0] = false; // DO NOT TOUCH THIS
       }
 
