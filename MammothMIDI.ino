@@ -1,5 +1,5 @@
 #include <MIDI.h>                        //
-                                         //
+#include "pedals.h"                                  //
 MIDI_CREATE_DEFAULT_INSTANCE();          //    IGNORE ALL OF THIS
                                          //    THIS IS NOT FOR YOU
 #define NUM_FOOTSWITCHES 10              //     TO PLAY WITH!
@@ -89,6 +89,8 @@ const byte FOOTSWITCH[NUM_FOOTSWITCHES] = { 2,  4,  6,  8, 10, 12, A0, A2, A4, A
 
 //WHICH PINS HAVE YOU WIRED YOUR LED'S TO?
 const byte LED[NUM_LEDS] = {3, 5, 7, 9, 11, 13, A1, A3, A5, A7};
+
+int songNumber = 0; //STARTING SONG NUMBER
 
 /* ------------------------------------------------------------------------------------------------------------------------------
  
