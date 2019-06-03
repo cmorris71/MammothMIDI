@@ -34,7 +34,12 @@ int tapLedState = LOW;
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OFF);
   Serial.begin(31250);
+  const int ledPin =  13;      // the number of the LED 
 
+  //setup serial port for monitoring
+  //Serial.begin(9600);
+  while (! Serial); // Wait untilSerial is ready - Leonardo
+  u8g2.begin(); 
 
   for (int i = 0; i < NUM_FOOTSWITCHES; i++) {  pinMode(FOOTSWITCH[i] , INPUT_PULLUP);  }
   for (int j = 0; j < NUM_LEDS; j++) {  pinMode(LED[j], OUTPUT);  digitalWrite(LED[j], LOW); }
@@ -53,6 +58,9 @@ void setup() {
   tapTime1 = 500;
   tapTime2 = 500;
 
+  //testing
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);
 }
 //*****************************************************************************
 void loop() {
@@ -60,6 +68,8 @@ void loop() {
    int tapRate;
    unsigned long currentTapMillis = millis();
 
+// ======= DISPLAY ============
+  //show(message);
 // ======= FOOTSWITCH 1 ==============================
     if (digitalRead(FOOTSWITCH[0]) != fsPush[0]) {
     fsPush[0] = digitalRead(FOOTSWITCH[0]);

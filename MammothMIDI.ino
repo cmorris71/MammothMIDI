@@ -1,9 +1,18 @@
-#include <MIDI.h>                        //
-#include "pedals.h"                                  //
-MIDI_CREATE_DEFAULT_INSTANCE();          //    IGNORE ALL OF THIS
-                                         //    THIS IS NOT FOR YOU
-#define NUM_FOOTSWITCHES 10              //     TO PLAY WITH!
-#define NUM_LEDS 10                      //
+#include <U8g2lib.h>
+#include <U8x8lib.h>
+#include <MIDI.h>  
+#include <Wire.h>
+#include "pedals.h"                      
+
+
+MIDI_CREATE_DEFAULT_INSTANCE();          
+                                         
+#define NUM_FOOTSWITCHES 10              
+#define NUM_LEDS 10  
+
+// u8g2 constructor
+U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); 
+
 //*****************************************************************************************************************
 //*****************************************************************************************************************
 //*****************************************************************************************************************
@@ -91,7 +100,7 @@ const byte FOOTSWITCH[NUM_FOOTSWITCHES] = { 2,  4,  6,  8, 10, 12, A0, A2, A4, A
 const byte LED[NUM_LEDS] = {3, 5, 7, 9, 11, 13, A1, A3, A5, A7};
 
 int songNumber = 0; //STARTING SONG NUMBER
-
+char message[12] = "Initializin";  //display message
 /* ------------------------------------------------------------------------------------------------------------------------------
  
    GOOD, NOW THAT'S DONE, MOVE ON TO THE TAB MARKED B_FOOTSWITCH_DECLARATION AND DEFINE ALL OF YOUR FOOTSWITCHES. AGAIN, 

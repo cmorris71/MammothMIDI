@@ -71,17 +71,25 @@
 
    ONCE YOU HAVE FINISHED, RETURN BACK TO THE 'MIDI_FOOTSWITCH_CONTROLLER' TAB FOR THE UPLOAD PROCESS.
 
+
 *///=====================================================================================================================
 /// ======= FOOTSWITCH 1 ================================================================================================
 /// =====================================================================================================================
+  const int ledPin =  13;      // the number of the LED 
   if (fsState[0] == 0 && readyToSendMidi[0] == true){
 
 /// ========= COMMAND 1 ==========================================
       ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
       songNumber++;
+      //String song = String("Song ") + songNumber;
+      showSong(String(songNumber));
+      Serial.println("FS1 Command 1 Fired");
+      
+      digitalWrite(ledPin, HIGH);
       MIDI.sendProgramChange(songNumber,HX_STOMP);
       MIDI.sendProgramChange(songNumber*2,TIMELINE);
       MIDI.sendProgramChange(songNumber*3,BIGSKY);
+
       readyToSendMidi[0] = false; // DO NOT TOUCH THIS
   }
 
@@ -101,6 +109,10 @@
 /// ========= COMMAND 2 ==========================================
       ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
       songNumber++;
+      Serial.println("FS1 Command 2 Fired");
+      digitalWrite(ledPin, LOW);
+      //String song = String("Song ") + songNumber;
+      showSong(String(songNumber));
       MIDI.sendProgramChange(songNumber,HX_STOMP);
       MIDI.sendProgramChange(songNumber*2,TIMELINE);
       MIDI.sendProgramChange(songNumber*3,BIGSKY);
@@ -126,6 +138,9 @@
 /// ========= COMMAND 1 ==========================================
       ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
       songNumber--;
+      //String song = String("Song ") + songNumber;
+      //showSong(String(songNumber));
+      showSong("XXX");
       MIDI.sendProgramChange(songNumber,HX_STOMP);
       MIDI.sendProgramChange(songNumber*2,TIMELINE);
       MIDI.sendProgramChange(songNumber*3,BIGSKY);
@@ -148,9 +163,12 @@
 /// ========= COMMAND 2 ==========================================
       ///MIDI.sendControlChange(68,100,1);  //(CC#, VALUE, CHANNEL)
       songNumber--;
+      //String song = String("Song ") + songNumber;
+      showSong(String(songNumber));
       MIDI.sendProgramChange(songNumber,HX_STOMP);
       MIDI.sendProgramChange(songNumber*2,TIMELINE);
       MIDI.sendProgramChange(songNumber*3,BIGSKY);
+
       readyToSendMidi[1] = false; // DO NOT TOUCH THIS
       }
 
