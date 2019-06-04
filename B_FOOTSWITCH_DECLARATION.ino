@@ -76,40 +76,42 @@
 /// ======= FOOTSWITCH 1 ================================================================================================
 /// =====================================================================================================================
   const int ledPin =  13;      // the number of the LED 
-  if (fsState[0] == 0 && readyToSendMidi[0] == true){
+  //if (fsState[0] == 0 && readyToSendMidi[0] == true){
+  if (fs1Click == 1){
+    fs1Click =0;
 
 /// ========= COMMAND 1 ==========================================
       ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
       songNumber++;
       //String song = String("Song ") + songNumber;
       showSong(String(songNumber));
-      Serial.println("FS1 Command 1 Fired");
+      //Serial.println("FS1 Command 1 Fired");
       
       digitalWrite(ledPin, HIGH);
-      MIDI.sendProgramChange(songNumber,HX_STOMP);
-      MIDI.sendProgramChange(songNumber*2,TIMELINE);
-      MIDI.sendProgramChange(songNumber*3,BIGSKY);
+      //MIDI.sendProgramChange(songNumber,HX_STOMP);
+      //MIDI.sendProgramChange(songNumber*2,TIMELINE);
+      //MIDI.sendProgramChange(songNumber*3,BIGSKY);
 
       readyToSendMidi[0] = false; // DO NOT TOUCH THIS
   }
 
-  if (fsState[0] == 0 && fsReady[0] == true){      
-
-      //LED FUNCTION   -  TO SELECT, DELETE THE TWO // AT THE START OF THE LINE
-      //NOTE - ONLY SELECT 1!! ALSO NOTE, ALL TIMES ARE MILLISECONDS, 1000 = 1 SECOND ETC.
-      
-      //ledOn(1);               //LED ON - Constructor is the (LED number)
-      //ledOff(1);              //LED OFF - Constructor is the (LED number)
-      flashLED(1, 500);       //LED FLASH - Constructor is (LED number, flash time)
-      //blinkLED(1, 200, 200);  //BLINK THE LED - Constructor is (LED number, time on, time off)
-
-} 
+//  if (fsState[0] == 0 && fsReady[0] == true){      
+//
+//      //LED FUNCTION   -  TO SELECT, DELETE THE TWO // AT THE START OF THE LINE
+//      //NOTE - ONLY SELECT 1!! ALSO NOTE, ALL TIMES ARE MILLISECONDS, 1000 = 1 SECOND ETC.
+//      
+//      //ledOn(1);               //LED ON - Constructor is the (LED number)
+//      //ledOff(1);              //LED OFF - Constructor is the (LED number)
+//      flashLED(1, 500);       //LED FLASH - Constructor is (LED number, flash time)
+//      //blinkLED(1, 200, 200);  //BLINK THE LED - Constructor is (LED number, time on, time off)
+//
+//} 
 
   if (fsState[0] == 1 && readyToSendMidi[0] == true){  
 /// ========= COMMAND 2 ==========================================
-      ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
+/*      ///MIDI.sendControlChange(68,100,2);  //(CC#, VALUE, CHANNEL)
       songNumber++;
-      Serial.println("FS1 Command 2 Fired");
+      //Serial.println("FS1 Command 2 Fired");
       digitalWrite(ledPin, LOW);
       //String song = String("Song ") + songNumber;
       showSong(String(songNumber));
@@ -127,9 +129,8 @@
       //ledOn(1);               //LED ON - Constructor is the (LED number)
       //ledOff(1);              //LED OFF - Constructor is the (LED number)
       flashLED(1, 500);       //LED FLASH - Constructor is (LED number, flash time)
-      //blinkLED(1, 200, 200);  //BLINK THE LED - Constructor is (LED number, time on, time off)
-
-     
+      //blinkLED(1, 200, 200);  //BLINK THE LED - Constructor is (LED number, time on, time off)*/
+  
 }// =====================================================================================================================
 /// ======= FOOTSWITCH 2 ================================================================================================
 /// =====================================================================================================================

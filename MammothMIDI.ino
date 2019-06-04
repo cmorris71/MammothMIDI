@@ -2,8 +2,10 @@
 #include <U8x8lib.h>
 #include <MIDI.h>  
 #include <Wire.h>
+#include <PushButton.h> // Include the PushButton library
 #include "pedals.h"                      
 
+PushButton fs1(2);
 
 MIDI_CREATE_DEFAULT_INSTANCE();          
                                          

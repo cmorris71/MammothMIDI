@@ -2,6 +2,9 @@
 //************************** DO NOT TOUCH ANYTHING ON THIS TAB! ***************************************************
 //*****************************************************************************************************************
 //*****************************************************************************************************************
+bool fs1Click = 0;
+bool fs1Hold = 0;
+bool fs1DoubleClick = 0;
 
 unsigned int debounceTime = 10;
 bool readyToSendMidi [10];
@@ -32,12 +35,15 @@ int tapLedState = LOW;
 
 //*****************************************************************************
 void setup() {
+
+  // ========= Button Setup ======
+  fs1.setActiveLogic(LOW);
   MIDI.begin(MIDI_CHANNEL_OFF);
   Serial.begin(31250);
   const int ledPin =  13;      // the number of the LED 
 
   //setup serial port for monitoring
-  //Serial.begin(9600);
+  Serial.begin(9600);
   while (! Serial); // Wait untilSerial is ready - Leonardo
   u8g2.begin(); 
 
@@ -64,9 +70,36 @@ void setup() {
 }
 //*****************************************************************************
 void loop() {
+  fs1.update();
 
+
+// ============= Button event handling ============
+  if (fs1.isClicked()) // Click event
+  {
+    Serial.println("fs1 clicked!");
+    
+  }
+  
    int tapRate;
    unsigned long currentTapMillis = millis();
+
+   if (fs1.isReleased()) // Release event
+  {
+    Serial.println("fs1 released!");
+    fs1Click = 1;
+  }
+
+  if (fs1.isDoubleClicked()) // Double-click event
+  {
+    Serial.println("fs1 double-clicked!");
+    fs1DoubleClick = 1;
+  }
+
+  if (fs1.isHeld()) // Hold/long push event
+  {
+    Serial.println("fs1 held down!");
+    fs1Hold = 1;
+  }
 
 // ======= DISPLAY ============
   //show(message);
