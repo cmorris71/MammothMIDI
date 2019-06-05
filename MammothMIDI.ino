@@ -159,6 +159,7 @@ void setup() {
 
   // ========= Button Setup ======
   for (int i = 0; i<6; i++){
+    pinMode(2+i, INPUT_PULLUP);
     footSwitch[i].setActiveLogic(LOW);
     footSwitch[i].disableDoubleClick();
   }
@@ -166,33 +167,13 @@ void setup() {
   
   MIDI.begin(MIDI_CHANNEL_OFF);
   Serial.begin(31250);
-  const int ledPin =  13;      // the number of the LED 
+
 
   //setup serial port for monitoring
   Serial.begin(9600);
   while (! Serial); // Wait untilSerial is ready - Leonardo
   u8g2.begin(); 
 
-  //for (int i = 0; i < NUM_FOOTSWITCHES; i++) {  pinMode(FOOTSWITCH[i] , INPUT_PULLUP);  }
-  //for (int j = 0; j < NUM_LEDS; j++) {  pinMode(LED[j], OUTPUT);  digitalWrite(LED[j], LOW); }
-  
-  //for (int k = 0; k < 10; k++) {   dbTime[k] = 0;   }
-  //for (int l = 0; l < 10; l++) {   fsPush[l] = HIGH;   }
-  //for (int m = 0; m < 10; m++) {   fsState[m] = 0;   }  
-  
-  //for (int n = 0; n < 10; n++) {   flashLedReady[n] = false;   }
-  //for (int o = 0; o < 10; o++) {   flashLedState[o] = false;   }
-  //for (int p = 0; p < 10; p++) {   fsReady[p] = false;   }
-  //for (int q = 0; q < 10; q++) {   readyToSendMidi[q] = false;   }    
-
-  //lastTap[0] = 0;
-  //lastTap[1] = 0;
-  //tapTime1 = 500;
-  //tapTime2 = 500;
-
-  //testing
-  // initialize the LED pin as an output:
-  pinMode(ledPin, OUTPUT);
 }
 //*****************************************************************************
 void loop() {
@@ -214,3 +195,48 @@ void loop() {
 
 // ======= DISPLAY ============
   //show(message);
+  ///=====================================================================================================================
+/// ======= FOOTSWITCH 1 ================================================================================================
+/// =====================================================================================================================
+  if (fsClicked[0]== true)
+  {
+      fsClicked[0]=false;
+      songNumber++;
+      Serial.println("FS1 Released");
+      showSong(String(songNumber));
+//      MIDI.sendProgramChange(songNumber,HX_STOMP);
+//      MIDI.sendProgramChange(songNumber*2,TIMELINE);
+//      MIDI.sendProgramChange(songNumber*3,BIGSKY);
+      readyToSendMidi[0] = false; 
+  }
+
+// =====================================================================================================================
+/// ======= FOOTSWITCH 2 ================================================================================================
+/// =====================================================================================================================
+  if (fsClicked[1]==true)
+  {
+      fsClicked[1] =false;
+      songNumber--;
+      Serial.println("FS2 Released");
+      showSong(String(songNumber));
+//      MIDI.sendProgramChange(songNumber,HX_STOMP);
+//      MIDI.sendProgramChange(songNumber*2,TIMELINE);
+//      MIDI.sendProgramChange(songNumber*3,BIGSKY);
+      readyToSendMidi[0] = false; 
+  }
+}
+
+//======== DISPLAY CLASSES ===========================================================
+
+void showSong(String song) {
+  int w = u8g2.getStrWidth(song.c_str());
+  int x = 64 - w/2;
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_ncenB10_tr);
+    u8g2.drawStr(0,12,"Song");
+    u8g2.setFont(u8g2_font_inb33_mf);
+    u8g2.drawStr(x,60,song.c_str());
+  } while ( u8g2.nextPage() );
+  //delay(1000);
+}
