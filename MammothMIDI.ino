@@ -5,12 +5,13 @@
 #include <PushButton.h> // Include the PushButton library
 #include "pedals.h"                      
 
-PushButton fs1(2);
 
 MIDI_CREATE_DEFAULT_INSTANCE();          
                                          
 #define NUM_FOOTSWITCHES 10              
 #define NUM_LEDS 10  
+
+
 
 // u8g2 constructor
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); 
@@ -86,6 +87,15 @@ U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
  -----------------------------------------------------------------------------------------------------------------------------*/
 // IF YOU FOLLOWED THE WIRING INSTRUCTIONS IN THE PDF FILE, THEN YOU ONLY HAVE TWO QUESTIONS TO ANSWER HERE;
 
+PushButton footSwitch[6] = {
+  PushButton(2),
+  PushButton(3),
+  PushButton(4),
+  PushButton(5),
+  PushButton(6),
+  PushButton(7)
+};
+
 //ARE YOU USING TAP TEMPO? true OR false
 bool tapTempoUsed = false;    //(MUST BE lowercase, will turn blue)
 
@@ -103,24 +113,104 @@ const byte LED[NUM_LEDS] = {3, 5, 7, 9, 11, 13, A1, A3, A5, A7};
 
 int songNumber = 0; //STARTING SONG NUMBER
 char message[12] = "Initializin";  //display message
-/* ------------------------------------------------------------------------------------------------------------------------------
- 
-   GOOD, NOW THAT'S DONE, MOVE ON TO THE TAB MARKED B_FOOTSWITCH_DECLARATION AND DEFINE ALL OF YOUR FOOTSWITCHES. AGAIN, 
-   IF YOU USED FEWER THAN 10 SWITCHES, JUST IGNORE THEM.
-   
-   ---------------------------------------------------- FINAL STEPS! ------------------------------------------------------------
-   ONCE YOU HAVE CHANGED YOUR MIDI MESSAGES AND LED FUNCTIONS, CLICK THE CHECK MARK BUTTON (VERIFY) AT THE TOP LEFT OF THE SCREEN
-   UNDER "FILE". THIS WILL TAKE A FEW MOMENTS BUT IT WILL CHECK EVERYTHING. ONCE COMPLETE IT WILL SAY "DONE COMPILING" IN THE
-   BLUE BAR BELOW AND SOME OTHER STUFF ABOUT MEMORY USAGE. IF IT COMES BACK RED, READ THE ERROR AND TRY AND WORK OUT WHAT YOU HAVE
-   DONE WRONG. THERE CAN'T BE MUCH IF YOU'VE FOLLOWED THE INSTRUCTIONS.
 
-   IF EVERYTHING HAS COME BACK OK, PLUG THE CABLE INTO THE ARDUINO AND INTO YOUR COMPUTER. YOU ARE NOW READY TO UPLOAD TO YOUR
-   MIDI CONTROLLER! THIS IS THE ARROW BUTTON NEXT TO THE COMPILE BUTTON YOU CLICKED PREVIOUSLY.
-   
-   IMPORTANT NOTE. DISCONNECT THE MIDI CABLE WHENEVER YOU ARE UPLOADING TO THE ARDUINO. DURING THE UPLOAD PROCESS THE ARDUINO
-   WILL SEND ALOT OF NONSENSICAL MESSAGES TO YOUR MIDI DEVICE. IT SHOULDN'T DAMAGE ANYTHING BUT BETTER SAFE THAN SORRY! THIS
-   IS ONLY DURING THE UPLOAD PROCESS.
+//ARRAYS FOR FOOT SWITCH EVENTS
+int fsCurrentState[6];
+int fsPriorState[6];
+bool fsClicked[6];
+bool fsReleased[6];
+bool fsDoubleClick[6];
+bool fsHold[6];
 
-   ONCE DONE IT SHOULD ALL BE WORKING WONDERFULLY! ENJOY!
-    
------------------------------------------------------------------------------------------------------------------------------ */ 
+//*****************************************************************************************************************
+//************************** DO NOT TOUCH ANYTHING ON THIS TAB! ***************************************************
+//*****************************************************************************************************************
+//*****************************************************************************************************************
+
+unsigned int debounceTime = 10;
+bool readyToSendMidi [10];
+
+bool fsState [10];
+unsigned long dbTime [10];
+bool fsPush [10];
+bool fsReady [10];
+
+unsigned long blinkMillisArray [10];
+
+unsigned long flashButtonPushedMillis [10];
+unsigned long flashCurrentMillis [10];
+bool flashLedReady [10];
+bool flashLedState [10];
+unsigned long flashLedTurnedOnAt [10];
+unsigned long flashTiming[10];
+
+int ttState = 0;
+unsigned long lastTap[2];
+unsigned long tapIntervalTime;
+unsigned long tapTime1;
+unsigned long tapTime2;
+
+//TAP LED
+unsigned long previousTapMillis = 0;
+int tapLedState = LOW;
+
+//*****************************************************************************
+void setup() {
+
+  // ========= Button Setup ======
+  for (int i = 0; i<6; i++){
+    footSwitch[i].setActiveLogic(LOW);
+    footSwitch[i].disableDoubleClick();
+  }
+
+  
+  MIDI.begin(MIDI_CHANNEL_OFF);
+  Serial.begin(31250);
+  const int ledPin =  13;      // the number of the LED 
+
+  //setup serial port for monitoring
+  Serial.begin(9600);
+  while (! Serial); // Wait untilSerial is ready - Leonardo
+  u8g2.begin(); 
+
+  //for (int i = 0; i < NUM_FOOTSWITCHES; i++) {  pinMode(FOOTSWITCH[i] , INPUT_PULLUP);  }
+  //for (int j = 0; j < NUM_LEDS; j++) {  pinMode(LED[j], OUTPUT);  digitalWrite(LED[j], LOW); }
+  
+  //for (int k = 0; k < 10; k++) {   dbTime[k] = 0;   }
+  //for (int l = 0; l < 10; l++) {   fsPush[l] = HIGH;   }
+  //for (int m = 0; m < 10; m++) {   fsState[m] = 0;   }  
+  
+  //for (int n = 0; n < 10; n++) {   flashLedReady[n] = false;   }
+  //for (int o = 0; o < 10; o++) {   flashLedState[o] = false;   }
+  //for (int p = 0; p < 10; p++) {   fsReady[p] = false;   }
+  //for (int q = 0; q < 10; q++) {   readyToSendMidi[q] = false;   }    
+
+  //lastTap[0] = 0;
+  //lastTap[1] = 0;
+  //tapTime1 = 500;
+  //tapTime2 = 500;
+
+  //testing
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);
+}
+//*****************************************************************************
+void loop() {
+
+   int tapRate;
+   unsigned long currentTapMillis = millis();
+
+   // ============= Raw Button Event Handling ============
+  for(int i=0; i<6; i++)
+  {
+    footSwitch[i].update();
+    if (footSwitch[i].isClicked()) fsClicked[i]  = true;// Click event
+    if (footSwitch[i].isReleased())fsReleased[i] = true; // Release event
+    if (footSwitch[i].isHeld())    fsHold[i]     = true; // Hold/long push event
+   }
+
+   // ============= Processed Button Events ===============
+   
+
+// ======= DISPLAY ============
+  //show(message);
