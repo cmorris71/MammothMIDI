@@ -5,6 +5,12 @@
 #include <PushButton.h> // Include the PushButton library
 #include "pedals.h"
 
+#define WAITING_STATE 0
+#define PRE_BUTTON_STATE 1
+#define CLICKED_BUTTON_STATE 2
+#define HELD_BUTTON_STATE 3
+#define DOUBLE_BUTTON_STATE 4
+
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 // u8g2 constructor
@@ -24,12 +30,9 @@ U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
 
    ------------------------------------------------------ THE CODE -----------------------------------------------------
-
-   NOW BEFORE WE ACTUALLY GET TO CODING, WE NEED TO INCLUDE ALL THE CRAZY STUFF THAT WILL TRICK THE ARDUINO INTO
-   FUNCTIONING AS A MIDI CONTROLLER. AT THE TOP OF THIS PROGRAM 'OPEN TOOLS>MANAGE LIBRARIES...'. SEARCH FOR 'MIDI LIBRARY'.
-   ONE SHOULD POPUP CALLED 'MIDI Library by Forty Seven Effects Version 4.3.1' CLICK INSTALL.
-
-   YOU WILL NEED KRISTIAN KLIEN'S PUSHBUTTON LIBRARY: https://github.com/kristianklein/PushButton
+   YOU WILL NEED THE FOLLOWING LIBRARIES:
+   1) KRISTIAN KLIEN'S PUSHBUTTON LIBRARY: https://github.com/kristianklein/PushButton
+   2) MIDI Library by Forty Seven Effects Version 4.3.1
 
   -----------------------------------------------------------------------------------------------------------------------------*/
 
@@ -45,7 +48,7 @@ PushButton footSwitch[8] = {
   PushButton(9)
 };
 
-
+int state = WAITING_STATE;
 int songNumber = 0; //STARTING SONG NUMBER
 char message[12] = "Initializin";  //display message
 
@@ -64,6 +67,8 @@ bool fsPush [10];
 bool fsReady [10];
 
 byte active = 0;
+byte old_active = 0;
+byte old_state = 0;
 
 //*****************************************************************************
 void setup() {
@@ -91,50 +96,94 @@ void loop() {
 
   byte whichSwitch;
 
+/*-----------------------------------------------------------------------------
+Button State Machine
+
+The code below implements a 5-state, finite state machine for servicing button
+events.
+
+WAITING_STATE (initial state)
+  No buttons pressed. Nothing to do.
+  
+PRE_BUTTON_STATE (entry only from WAITING_STATE)
+  Button pressed. Waiting to see if this will be a double button, hold, or 
+  single button clicked event
+  
+CLICKED_BUTTON_STATE (entry only from PRE_BUTTON_STATE)
+  A single button has been clicked
+  
+HELD_BUTTON_STATE (entry only from PRE_BUTTON_STATE)
+  A button was held
+  
+DOUBLE_BUTTON_STATE (entry only from PRE_BUTTON_STATE)
+  A pair of bottons has been clicked
+
+------------------------------------------------------------------------------*/
   // DETERMINE ACTIVE BUTTONS
   active = 0;
   for (int i = 0; i < 8; i++)
   {
     footSwitch[i].update();
-    if (footSwitch[i].isActive()) {
+    if (footSwitch[i].isActive())
+    {
       active++;
     }
   }
 
-  //TWO BUTTON SWITCH EVENTS
-  if (footSwitch[0].isActive() and footSwitch[1].isActive()) // 1ST AND 2ND FOOTSWTICHES ARE PRESSED
+   //CHECK FOR STATE WHERE NO BUTTONS ARE PRESSED
+  if (active == 0 and state != PRE_BUTTON_STATE)
   {
-    if (!oneShotSwitchA) { // ONE-SHOT TRIGGER OF VIRTUAL BUTTON ACTION
-      oneShotSwitchA = true;
-      virtualSwitchAAction(); // CALL ACTION
-    }
-  } else {
-    oneShotSwitchA = false; //RESET ONE-SHOT
+    state = WAITING_STATE;
   }
 
-  //SINGLE BUTTON HOLD EVENTS
-  for (int i = 0; i < 8; i++)
+  //CHECK FOR STATE WHERE 1 BUTTON HAS BEEN PRESSED
+  if (state == WAITING_STATE and active == 1)
   {
-    if (active == 1 and footSwitch[i].isHeld())
+    state =   PRE_BUTTON_STATE;
+  }
+
+  //TWO BUTTON SWITCH EVENTS
+  if (state == PRE_BUTTON_STATE and active == 2)
+  {
+    state = DOUBLE_BUTTON_STATE;
+    doubleAction();
+    //    // ONE-SHOT TRIGGER OF VIRTUAL BUTTON ACTION
+    //    if (!oneShotSwitch)
+    //    {
+    //      oneShotSwitch = true;
+    //      virtualSwitchAction(); // CALL ACTION
+    //    } else {
+    //      oneShotSwitch = false; //RESET ONE-SHOT
+    //    }
+  }
+
+  //HOLD BUTTON  EVENTS
+  if (state == PRE_BUTTON_STATE)
+  {
+    for (int i = 0; i < 8; i++)
     {
-      holdAction(i);
-    } else if (active == 0 and footSwitch[i].isReleased()) 
-    {
-        
-          releaseAction(i);
-        
+      if (footSwitch[i].isHeld())
+      {
+        state = HELD_BUTTON_STATE;
+        holdAction();
+        break;
       }
     }
-  
+  }
 
-
-  //DEBUG if(active != 0)Serial.println(active, BIN);
-  //Serial.println("hello");   // ============= Processed Button Events ===============
-
-
-
-
-
+  //SINGLE BUTTON EVENT
+  if (state == PRE_BUTTON_STATE and active == 0)
+  {
+    for (int i = 0; i < 8; i++)
+    {
+      if (footSwitch[i].isReleased())
+      {
+        state = CLICKED_BUTTON_STATE;
+        clickAction();
+        break;
+      }
+    }
+  }
 
 
   // ======= DISPLAY ============
@@ -174,45 +223,32 @@ void loop() {
 //======== DISPLAY CLASSES ===========================================================
 
 void showSong(String song) {
-  //  int w = u8g2.getStrWidth(song.c_str());
-  //  int x = 64 - w/2;
-  //  u8g2.firstPage();
-  //  do {
-  //    u8g2.setFont(u8g2_font_ncenB10_tr);
-  //    u8g2.drawStr(0,12,"Song");
-  //    u8g2.setFont(u8g2_font_inb33_mf);
-  //    u8g2.drawStr(x,60,song.c_str());
-  //  } while ( u8g2.nextPage() );
+    int w = u8g2.getStrWidth(song.c_str());
+    int x = 64 - w/2;
+    u8g2.firstPage();
+    do {
+      u8g2.setFont(u8g2_font_ncenB10_tr);
+      u8g2.drawStr(0,12,"Song");
+      u8g2.setFont(u8g2_font_inb33_mf);
+      u8g2.drawStr(x,60,song.c_str());
+    } while ( u8g2.nextPage() );
 
 }
 
-// =====================================================================================================================
-/// ======= FOOTSWITCH 1 & 2 ================================================================================================
-/// =====================================================================================================================
-void bankup12()
+
+void doubleAction()
 {
-  fsClicked[1] = false;
-  songNumber--;
-  Serial.println("FS2 Released");
-  showSong(String(songNumber));
-  //      MIDI.sendProgramChange(songNumber,HX_STOMP);
-  //      MIDI.sendProgramChange(songNumber*2,TIMELINE);
-  //      MIDI.sendProgramChange(songNumber*3,BIGSKY);
-  readyToSendMidi[0] = false;
+  Serial.println("Double State");
 }
 
-void virtualSwitchAAction()
+void holdAction()
 {
-  Serial.println("Virtual Switch A One Shot Triggered");
-}
-
-void holdAction(byte switchNo)
-{
-  Serial.println("Switch " + String(switchNo) + " Held");
+  Serial.println("Hold State");
 }
 
 
-void releaseAction(byte switchNo)
+void clickAction()
 {
-  Serial.println("Switch " + String(switchNo) + " Clicked");
+  
+  Serial.println("Click State");
 }
