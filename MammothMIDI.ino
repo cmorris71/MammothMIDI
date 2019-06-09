@@ -19,11 +19,6 @@
      PIN 5 ON THE SOCKET GOES TO A 220ohm RESISTOR AND THEN TO THE TX1 PIN ON THE ARDUINO.
 */
 
-
-
-const byte midiPC = 0; //MIDI Program Change
-const byte midiCC = 1; //MIDI Control Change
-
 // Create and bind the MIDI interface to the default hardware Serial port
 MIDI_CREATE_DEFAULT_INSTANCE();
 
