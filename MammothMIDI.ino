@@ -2,7 +2,7 @@
 #include <MIDI.h> // MIDI Library by Forty Seven Effects Version 4.3.1
 #include <Wire.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
-#include "pedals.h"
+#include "config.h"
 
 // State machine definitions
 #define WAITING_STATE 0
@@ -19,6 +19,10 @@
      PIN 5 ON THE SOCKET GOES TO A 220ohm RESISTOR AND THEN TO THE TX1 PIN ON THE ARDUINO.
 */
 
+
+
+const byte midiPC = 0; //MIDI Program Change
+const byte midiCC = 1; //MIDI Control Change
 
 // Create and bind the MIDI interface to the default hardware Serial port
 MIDI_CREATE_DEFAULT_INSTANCE();
