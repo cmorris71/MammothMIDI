@@ -41,6 +41,8 @@ int state = WAITING_STATE; //Initial state
 int songNumber = 0; //Initial song number
 byte active = 0; //Number of active switches
 
+byte page = 0;
+
 //========= Returns number for active switch starting with 'start' =========
 int whichSwitch(int start = 0) {
 
@@ -77,9 +79,9 @@ void showSong(String song) {
   int x = 64 - w / 2;
   u8g2.firstPage();
   do {
-    u8g2.setFont(u8g2_font_ncenB10_tr);
+    u8g2.setFont(u8g2_font_ncenB08_tr);
     u8g2.drawStr(0, 12, "Song");
-    u8g2.setFont(u8g2_font_inb33_mf);
+    u8g2.setFont(u8g2_font_ncenB08_tr);
     u8g2.drawStr(x, 60, song.c_str());
   } while ( u8g2.nextPage() );
 }
@@ -89,29 +91,21 @@ void doubleAction()
 {
   int s1 = whichSwitch();
   int s2 = whichSwitch(s1);
-  Serial.println("Double State " + String(s1) + " & " + String(s2));
-
-  if (s1 == 1 and s2 == 2) songNumber--;
-  if (s1 == 2 and s2 == 3) songNumber++;
-  showSong(String(songNumber));
-  //      MIDI.sendProgramChange(songNumber,HX_STOMP);
-  //      MIDI.sendProgramChange(songNumber*2,TIMELINE);
-  //      MIDI.sendProgramChange(songNumber*3,BIGSKY);
-  
+  doubleActions[s1][s2]();
 }
 
 //========= Execute action for switch hold =========
 void holdAction()
 {
   int s = whichSwitch();
-  Serial.println("Hold State on " + String(s));
+  holdActions[s];
 }
 
 //========= Execute action for single button click =========
 void clickAction()
 {
   int s = whichSwitch(0);
-  Serial.println("Click State on " + String(s));
+  clickActions[page][s]
 }
 
 
