@@ -2,14 +2,8 @@
 #include <MIDI.h> // MIDI Library by Forty Seven Effects Version 4.3.1
 #include <Wire.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
+#include "globals.h"
 #include "config.h"
-
-// State machine definitions
-#define WAITING_STATE 0
-#define PRE_BUTTON_STATE 1
-#define CLICKED_BUTTON_STATE 2
-#define HELD_BUTTON_STATE 3
-#define DOUBLE_BUTTON_STATE 4
 
 /*
   WIRING INSTRUCTIONS
@@ -25,23 +19,6 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 // u8g2 display constructor
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
-// Create pushbuttons on digital pins 2-9
-PushButton footSwitch[8] = {
-  PushButton(2),
-  PushButton(3),
-  PushButton(4),
-  PushButton(5),
-  PushButton(6),
-  PushButton(7),
-  PushButton(8),
-  PushButton(9)
-};
-
-int state = WAITING_STATE; //Initial state
-int songNumber = 0; //Initial song number
-byte active = 0; //Number of active switches
-
-byte page = 0;
 
 //========= Returns number for active switch starting with 'start' =========
 int whichSwitch(int start = 0) {
@@ -105,7 +82,8 @@ void holdAction()
 void clickAction()
 {
   int s = whichSwitch(0);
-  clickActions[page][s]
+  clickActions[page][s]();
+  if (debug)Serial.println("clickAction Detected" + String(page) +" " + String(s));
 }
 
 
@@ -165,26 +143,26 @@ void loop() {
     }
   }
 
-  //CHECK FOR STATE WHERE NO BUTTONS ARE PRESSED
+  //DETECT STATE WHERE NO BUTTONS ARE PRESSED
   if (active == 0 and state != PRE_BUTTON_STATE)
   {
     state = WAITING_STATE;
   }
 
-  //CHECK FOR STATE WHERE 1 BUTTON HAS BEEN PRESSED
+  //DETECT STATE WHERE 1 BUTTON HAS BEEN PRESSED
   if (state == WAITING_STATE and active == 1)
   {
     state =   PRE_BUTTON_STATE;
   }
 
-  //TWO BUTTON SWITCH EVENTS
+  //DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 2)
   {
     state = DOUBLE_BUTTON_STATE;
     doubleAction();
   }
 
-  //HOLD BUTTON  EVENTS
+  //DETECT STATE WHERE ACTIVITY IS IN PROGRESS
   if (state == PRE_BUTTON_STATE)
   {
     for (int i = 0; i < 8; i++)
@@ -198,7 +176,7 @@ void loop() {
     }
   }
 
-  //SINGLE BUTTON EVENT
+  //DETECT STATE WHERE ONE BUTTON HAS BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 0)
   {
     for (int i = 0; i < 8; i++)
