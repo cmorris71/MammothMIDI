@@ -10,12 +10,12 @@ typedef void (*function) ();
 
 //========== Clicked Actions ==========
 void p1_display() {
-  strcpy(displays[0][0], "Button 1-1");
-  strcpy(displays[0][1], "Button 1-2");
-  strcpy(displays[1][0], "Button 1-3");
-  strcpy(displays[1][1], "Button 1-4");
-  strcpy(displays[2][0], "Button 1-5");
-  strcpy(displays[2][1], "Button 1-6");
+  strcpy(displays[0][0], "Plate");
+  strcpy(displays[0][1], "RV6");
+  strcpy(displays[1][0], "Plate+");
+  strcpy(displays[1][1], "RV6+");
+  strcpy(displays[2][0], "Plate++");
+  strcpy(displays[2][1], "RV6++");
 };
 void p1_s1() {
   if (debug)Serial.println("Switch :s1");
@@ -36,12 +36,12 @@ void p1_s6() {
 
 };
 void p2_display() {
-  strcpy(displays[0][0], "Button 2-1");
-  strcpy(displays[0][1], "Button 2-2");
-  strcpy(displays[1][0], "Button 2-3");
-  strcpy(displays[1][1], "Button 2-4");
-  strcpy(displays[2][0], "Button 2-5");
-  strcpy(displays[2][1], "Button 2-6");
+  strcpy(displays[0][0], "Tape");
+  strcpy(displays[0][1], "Analog");
+  strcpy(displays[1][0], "Digital");
+  strcpy(displays[1][1], "Reverse");
+  strcpy(displays[2][0], "Shimmer");
+  strcpy(displays[2][1], "LoFi");
 };
 void p2_s1() {
 
