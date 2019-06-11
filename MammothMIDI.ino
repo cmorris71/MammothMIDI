@@ -1,4 +1,4 @@
-#include <U8g2lib.h>
+#include <U8glib.h>
 #include <MIDI.h> // MIDI Library by Forty Seven Effects Version 4.3.1
 #include <Wire.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
@@ -17,8 +17,8 @@
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 // u8g2 display constructor
-U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-
+//U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+U8GLIB_SH1106_128X64 u8g(U8G_I2C_OPT_NONE);
 
 //========= Returns number for active switch starting with 'start' =========
 int whichSwitch(int start = 0) {
@@ -30,18 +30,18 @@ int whichSwitch(int start = 0) {
     {
       if (footSwitch[i].isReleased())
       {
-        return (i + 1);
+        return (i);
       }
     }
   }
   if (state == DOUBLE_BUTTON_STATE or state == HELD_BUTTON_STATE)
   {
-    for (int i = start; i < 8; i++)
+    for (int i = start; i < 12; i++)
       //Serial.printlf("double/held button state");
     {
       if (footSwitch[i].isActive())
       {
-        return (i + 1);
+        return (i);
       }
     }
   }
@@ -51,6 +51,7 @@ int whichSwitch(int start = 0) {
 }
 
 //========= Displays current song =========
+/*
 void showSong(String song) {
   int w = u8g2.getStrWidth(song.c_str());
   int x = 64 - w / 2;
@@ -61,13 +62,54 @@ void showSong(String song) {
     u8g2.setFont(u8g2_font_ncenB08_tr);
     u8g2.drawStr(x, 60, song.c_str());
   } while ( u8g2.nextPage() );
+}*/
+
+// Initialize I2C buses using TCA9548A I2C Multiplexer
+void tcaSelect(uint8_t i2c_bus) {
+  if (i2c_bus > 7) return;
+  Wire.beginTransmission(MUX_Address);
+  Wire.write(1 << i2c_bus);
+  Wire.endTransmission();
+}
+
+
+// Initialize the displays
+void displayInit() {
+  for (int i = 0; i < 4; i++) {
+    tcaSelect(i);   // Loop through each connected displays on the I2C buses
+    u8g.begin();  // Initialize display
+  }
+}
+
+
+void updateDisplays() {
+  for (int i = 0; i < 4; i++) {
+    tcaSelect(i);
+    if(debug) Serial.println("Updating Displays");
+    u8g.firstPage();
+    do {
+      /******** Display Button Text  *********/
+      u8g.setFont(u8g_font_profont22);
+      u8g.setFontPosBaseline();
+      u8g.drawStr(64-u8g.getStrWidth(displays[i][0])/2, 30, displays[i][0]);
+      u8g.setFont(u8g_font_profont22);
+      u8g.setFontPosBaseline();
+      u8g.drawStr(64-u8g.getStrWidth(displays[i][1])/2, 64, displays[i][1]);
+      u8g.drawHLine(0, 39, 128);
+      u8g.drawHLine(0, 40, 128);
+      u8g.drawHLine(0, 41, 128);
+      /***************************************/
+    } while ( u8g.nextPage() );
+    delay(50);
+  }
 }
 
 //========= Execute action for double switch press =========
 void doubleAction()
 {
   int s1 = whichSwitch();
-  int s2 = whichSwitch(s1);
+  int s2 = whichSwitch(s1+1);
+  //Serial.println(String(s1) + " " + String(s2));
   doubleActions[s1][s2]();
 }
 
@@ -83,7 +125,7 @@ void clickAction()
 {
   int s = whichSwitch(0);
   clickActions[page][s]();
-  if (debug)Serial.println("clickAction Detected" + String(page) +" " + String(s));
+  if (debug)Serial.println("clickAction Detected" + String(page) + " " + String(s));
 }
 
 
@@ -103,7 +145,7 @@ void setup() {
   Serial.begin(9600);
   while (! Serial); // Wait untilSerial is ready - Leonardo
 
-  u8g2.begin(); //Initialize the display
+  displayInit(); // Initialize the displays
 
 }
 //*****************************************************************************
@@ -147,18 +189,21 @@ void loop() {
   if (active == 0 and state != PRE_BUTTON_STATE)
   {
     state = WAITING_STATE;
+    //if(debug) Serial.println("waiting state");
   }
 
   //DETECT STATE WHERE 1 BUTTON HAS BEEN PRESSED
   if (state == WAITING_STATE and active == 1)
   {
     state =   PRE_BUTTON_STATE;
+    //if(debug) Serial.println("pre button state");
   }
 
   //DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 2)
   {
     state = DOUBLE_BUTTON_STATE;
+    //if(debug) Serial.println("double button state");
     doubleAction();
   }
 
@@ -170,6 +215,7 @@ void loop() {
       if (footSwitch[i].isHeld())
       {
         state = HELD_BUTTON_STATE;
+        //if(debug) Serial.println("held button state");
         holdAction();
         break;
       }
@@ -184,6 +230,7 @@ void loop() {
       if (footSwitch[i].isReleased())
       {
         state = CLICKED_BUTTON_STATE;
+         //if(debug) Serial.println("clicked button state");
         clickAction();
         break;
       }

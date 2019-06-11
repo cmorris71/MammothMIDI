@@ -7,16 +7,18 @@
 
 bool debug = true;
 
+char displays[3][2][12];
+
+
 // Create pushbuttons on digital pins 2-9
-PushButton footSwitch[8] = {
+PushButton footSwitch[7] = {
+  NULL,
   PushButton(2),
   PushButton(3),
   PushButton(4),
   PushButton(5),
   PushButton(6),
-  PushButton(7),
-  PushButton(8),
-  PushButton(9)
+  PushButton(7)
 };
 
 int state = WAITING_STATE; //Initial state
