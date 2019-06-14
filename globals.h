@@ -7,7 +7,7 @@
 
 bool debug = false;
 
-char displays[3][2][12];
+char displays[3][2][14];
 
 bool toggle[7][7];
 bool toggleHold[7];

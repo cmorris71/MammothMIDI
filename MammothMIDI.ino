@@ -158,6 +158,8 @@ void setup() {
   while (! Serial); // Wait untilSerial is ready - Leonardo
 
   displayInit(); // Initialize the displays
+  
+  p1_display();
 
 }
 //*****************************************************************************

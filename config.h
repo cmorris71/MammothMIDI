@@ -12,15 +12,15 @@ extern void midiCC(int midiController, int midiValue, int midiChannel);
 typedef void (*function) ();
 
 
-
 //========== Clicked Actions ==========
 void p1_display() {
-  strcpy(displays[0][0], "Plate");
-  strcpy(displays[0][1], "RV6");
-  strcpy(displays[1][0], "Plate+");
-  strcpy(displays[1][1], "RV6+");
-  strcpy(displays[2][0], "Plate++");
-  strcpy(displays[2][1], "RV6++");
+  strcpy(displays[0][0], "----");
+  strcpy(displays[0][1], "(Tune)");
+  strcpy(displays[1][0], "----");
+  strcpy(displays[1][1], "(Preset 0)");
+  strcpy(displays[2][0], "----");
+  strcpy(displays[2][1], "----");
+  updateDisplays();
 };
 void p1_s1() {
   if (debug)Serial.println("Switch :s1");
