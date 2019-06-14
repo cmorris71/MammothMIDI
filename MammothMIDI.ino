@@ -52,7 +52,7 @@ int whichSwitch(int start = 0) {
 
 //========= Displays current song =========
 /*
-void showSong(String song) {
+  void showSong(String song) {
   int w = u8g2.getStrWidth(song.c_str());
   int x = 64 - w / 2;
   u8g2.firstPage();
@@ -62,7 +62,7 @@ void showSong(String song) {
     u8g2.setFont(u8g2_font_ncenB08_tr);
     u8g2.drawStr(x, 60, song.c_str());
   } while ( u8g2.nextPage() );
-}*/
+  }*/
 
 // Initialize I2C buses using TCA9548A I2C Multiplexer
 void tcaSelect(uint8_t i2c_bus) {
@@ -85,16 +85,16 @@ void displayInit() {
 void updateDisplays() {
   for (int i = 0; i < 4; i++) {
     tcaSelect(i);
-    if(debug) Serial.println("Updating Displays");
+    if (debug) Serial.println("Updating Displays");
     u8g.firstPage();
     do {
       /******** Display Button Text  *********/
       u8g.setFont(u8g_font_profont22);
       u8g.setFontPosBaseline();
-      u8g.drawStr(64-u8g.getStrWidth(displays[i][0])/2, 30, displays[i][0]);
+      u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 30, displays[i][0]);
       u8g.setFont(u8g_font_profont22);
       u8g.setFontPosBaseline();
-      u8g.drawStr(64-u8g.getStrWidth(displays[i][1])/2, 64, displays[i][1]);
+      u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 64, displays[i][1]);
       u8g.drawHLine(0, 39, 128);
       u8g.drawHLine(0, 40, 128);
       u8g.drawHLine(0, 41, 128);
@@ -104,11 +104,16 @@ void updateDisplays() {
   }
 }
 
+
+void megaDisplay () {
+ 
+
+}
 //========= Execute action for double switch press =========
 void doubleAction()
 {
   int s1 = whichSwitch();
-  int s2 = whichSwitch(s1+1);
+  int s2 = whichSwitch(s1 + 1);
   //Serial.println(String(s1) + " " + String(s2));
   doubleActions[s1][s2]();
 }
@@ -117,7 +122,8 @@ void doubleAction()
 void holdAction()
 {
   int s = whichSwitch();
-  holdActions[s];
+  if(debug) Serial.println("hold action fired :" + String(s));
+  holdActions[s]();
 }
 
 //========= Execute action for single button click =========
@@ -128,6 +134,12 @@ void clickAction()
   if (debug)Serial.println("clickAction Detected" + String(page) + " " + String(s));
 }
 
+void midiPC(int songNumber, int midiChannel){
+  MIDI.sendProgramChange(songNumber, midiChannel);
+}
+void midiCC(int midiControler, int midiValue, int midiChannel){
+  MIDI.sendControlChange(midiControler, midiValue, midiChannel);
+}
 
 void setup() {
 
@@ -142,7 +154,7 @@ void setup() {
   Serial.begin(31250);
 
   //setup serial port for monitoring
-  Serial.begin(9600);
+//  Serial.begin(9600);
   while (! Serial); // Wait untilSerial is ready - Leonardo
 
   displayInit(); // Initialize the displays
@@ -196,14 +208,14 @@ void loop() {
   if (state == WAITING_STATE and active == 1)
   {
     state =   PRE_BUTTON_STATE;
-    //if(debug) Serial.println("pre button state");
+    if(debug) Serial.println("pre button state");
   }
 
   //DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 2)
   {
     state = DOUBLE_BUTTON_STATE;
-    //if(debug) Serial.println("double button state");
+    if(debug) Serial.println("double button state");
     doubleAction();
   }
 
@@ -215,7 +227,7 @@ void loop() {
       if (footSwitch[i].isHeld())
       {
         state = HELD_BUTTON_STATE;
-        //if(debug) Serial.println("held button state");
+        if(debug) Serial.println("held button state");
         holdAction();
         break;
       }
@@ -230,7 +242,7 @@ void loop() {
       if (footSwitch[i].isReleased())
       {
         state = CLICKED_BUTTON_STATE;
-         //if(debug) Serial.println("clicked button state");
+        if(debug) Serial.println("clicked button state");
         clickAction();
         break;
       }

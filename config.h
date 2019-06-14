@@ -5,8 +5,13 @@
 #define MUX_Address 0x70 // TCA9548A Encoders address
 
 extern void updateDisplays();
+extern void megaDisplay();
+extern void midiPC(int songNumber, int midiChannel);
+extern void midiCC(int midiController, int midiValue, int midiChannel);
 
 typedef void (*function) ();
+
+
 
 //========== Clicked Actions ==========
 void p1_display() {
@@ -36,12 +41,12 @@ void p1_s6() {
 
 };
 void p2_display() {
-  strcpy(displays[0][0], "Tape");
-  strcpy(displays[0][1], "Analog");
-  strcpy(displays[1][0], "Digital");
-  strcpy(displays[1][1], "Reverse");
-  strcpy(displays[2][0], "Shimmer");
-  strcpy(displays[2][1], "LoFi");
+  strcpy(displays[0][0], "TAPE");
+  strcpy(displays[0][1], "ANALOG");
+  strcpy(displays[1][0], "DIGITAL");
+  strcpy(displays[1][1], "REVERSE");
+  strcpy(displays[2][0], "SHIMMER");
+  strcpy(displays[2][1], "LOFI");
 };
 void p2_s1() {
 
@@ -171,23 +176,24 @@ void s1_s2() {
   song--;
   if (debug)Serial.println("Song :" + String(song));
   //  showSong(String(songNumber));
-  //  MIDI.sendProgramChange(songNumber, HX_STOMP);
-  //  MIDI.sendProgramChange(songNumber * 2, TIMELINE);
-  //  MIDI.sendProgramChange(songNumber * 3, BIGSKY);
+  midiPC(song, HX_STOMP);
+  midiPC(song * 2, TIMELINE);
+  midiPC(song * 3, BIGSKY);
 };
 
 void s2_s3() {
   song++;
   if (debug)Serial.println("Song :" + String(song));
-  //  showSong(String(songNumber));
-  //  MIDI.sendProgramChange(songNumber, HX_STOMP);
-  //  MIDI.sendProgramChange(songNumber * 2, TIMELINE);
-  //  MIDI.sendProgramChange(songNumber * 3, BIGSKY);
+  //showSong(String(songNumber));
+  midiPC(song, HX_STOMP);
+  midiPC(song * 2, TIMELINE);
+  midiPC(song * 3, BIGSKY);
 };
 
 void s4_s5() {
   page--;
   clickActions[page][0]();
+  //megaDisplay();
   updateDisplays();
   if (debug)Serial.println("Page: " + String(page));
 };
@@ -201,10 +207,18 @@ void s5_s6() {
 
 //========== Clicked Actions ==========
 void holdS1() {
-
+  if (toggleHold[1]) {
+    midiCC(68, 127, HX_STOMP);
+  } else {
+    midiCC(68, 0, HX_STOMP);
+  }
+  toggleHold[1] = !toggleHold[1];
+if (debug) Serial.print("s1 held");
 };
 void holdS2() {
-
+    midiPC(0, HX_STOMP);
+  midiPC(0 * 2, TIMELINE);
+  midiPC(0 * 3, BIGSKY);
 };
 void holdS3() {
 
