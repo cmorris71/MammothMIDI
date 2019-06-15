@@ -89,21 +89,26 @@ void updateDisplays() {
     u8g.firstPage();
     do {
       /******** Display Button Text  *********/
-      u8g.setFont(u8g_font_profont22);
+      u8g.setFont(u8g_font_helvB12);
       u8g.setFontPosBaseline();
-      u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 30, displays[i][0]);
-      u8g.setFont(u8g_font_profont22);
+      u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 26, displays[i][0]);
+      u8g.setFont(u8g_font_helvB12);
       u8g.setFontPosBaseline();
-      u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 64, displays[i][1]);
-      u8g.drawHLine(0, 39, 128);
-      u8g.drawHLine(0, 40, 128);
-      u8g.drawHLine(0, 41, 128);
+      u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 60, displays[i][1]);
+      u8g.drawHLine(0, 35, 128);
+      u8g.drawHLine(0, 36, 128);
+      u8g.drawHLine(0, 37, 128);
       /***************************************/
     } while ( u8g.nextPage() );
     delay(50);
   }
 }
 
+void sendSong(){
+  midiPC(song, HX_STOMP);
+  midiPC(song * 2, TIMELINE);
+  midiPC(song * 3, BIGSKY);
+}
 
 void megaDisplay () {
  
@@ -148,6 +153,7 @@ void setup() {
     pinMode(2 + i, INPUT_PULLUP);
     footSwitch[i].setActiveLogic(LOW);
     footSwitch[i].disableDoubleClick();
+    footSwitch[i].setHoldTime(500); 
   }
 
   MIDI.begin(MIDI_CHANNEL_OFF);
