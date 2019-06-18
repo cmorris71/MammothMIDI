@@ -1,6 +1,7 @@
 #include <U8glib.h>
 #include <MIDI.h> // MIDI Library by Forty Seven Effects Version 4.3.1
 #include <Wire.h>
+#include <Encoder.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
 #include "globals.h"
 #include "config.h"
@@ -15,6 +16,11 @@
 
 // Create and bind the MIDI interface to the default hardware Serial port
 MIDI_CREATE_DEFAULT_INSTANCE();
+
+// Setup encoder. Best to use interrupt pins
+Encoder myEnc(2, 3);
+
+long oldPosition  = -999;
 
 // u8g2 display constructor
 //U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
@@ -150,17 +156,17 @@ void setup() {
 
   // ========= Button Setup =========
   for (int i = 0; i < 8; i++) {
-    pinMode(2 + i, INPUT_PULLUP);
+    pinMode(5 + i, INPUT_PULLUP);
     footSwitch[i].setActiveLogic(LOW);
     footSwitch[i].disableDoubleClick();
     footSwitch[i].setHoldTime(500); 
   }
 
   MIDI.begin(MIDI_CHANNEL_OFF);
-  Serial.begin(31250);
+  //Serial.begin(31250);
 
   //setup serial port for monitoring
-//  Serial.begin(9600);
+  Serial.begin(9600);
   while (! Serial); // Wait untilSerial is ready - Leonardo
 
   displayInit(); // Initialize the displays
@@ -257,30 +263,13 @@ void loop() {
     }
   }
 
-
-  // ======= DISPLAY ============
-  //show(message);
-  ///=====================================================================================================================
-  /// ======= FOOTSWITCH 1 ================================================================================================
-  /// =====================================================================================================================
-  //  if (fsClicked[0] == true)
-  //  {
-
-  //  }
-
-  // =====================================================================================================================
-  /// ======= FOOTSWITCH 2 ================================================================================================
-  /// =====================================================================================================================
-  //  if (fsClicked[1] == true)
-  //  {
-  //    fsClicked[1] = false;
-  //    songNumber--;
-  //    Serial.println("FS2 Released");
-  //    showSong(String(songNumber));
-  //    //      MIDI.sendProgramChange(songNumber,HX_STOMP);
-  //    //      MIDI.sendProgramChange(songNumber*2,TIMELINE);
-  //    //      MIDI.sendProgramChange(songNumber*3,BIGSKY);
-  //    readyToSendMidi[0] = false;
-  //  }
-  //
+  // =============== Encoder ============
+  long newPosition = myEnc.read();
+  if (newPosition != oldPosition) {
+    oldPosition = newPosition/4;
+    sprintf(displays[0][0], "%d", oldPosition);
+    //displays[0][0] =oldPosition;
+    updateDisplays();
+    Serial.println(newPosition);
+  }
 }
