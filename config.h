@@ -19,7 +19,7 @@ void p1_display() {
   strcpy(displays[1][0], "Holy Ground");
   strcpy(displays[2][0], "Build My Life");
   strcpy(displays[0][1], "<Tuner>");
-  strcpy(displays[1][1], "<Reset>");
+  strcpy(displays[1][1], "Good Good...");
   strcpy(displays[2][1], "No Longer Sl...");
   updateDisplays();
 };
@@ -27,10 +27,11 @@ void p1_s1() {
  midiCC(68, 0, HX_STOMP);
 };
 void p1_s2() {
-
+  song = 3;
+  sendSong();
 };
 void p1_s3() {
-  song = 3;
+  song = 4;
   sendSong();
 };
 void p1_s4() {
