@@ -109,6 +109,18 @@ void updateDisplays() {
     delay(50);
   }
 }
+void updateDisplay(int disp) {
+    tcaSelect(disp);
+    
+    u8g.firstPage();
+    do {
+      
+      //u8g.setFont(u8g_font_helvB12);
+      //u8g.setFontPosBaseline();
+      u8g.drawStr(64 - u8g.getStrWidth(displays[disp][0]) / 2, 26, displays[disp][0]);
+    } while ( u8g.nextPage() );
+    //delay(10);
+  }
 
 void sendSong(){
   midiPC(song, HX_STOMP);
@@ -269,7 +281,7 @@ void loop() {
     oldPosition = newPosition/4;
     sprintf(displays[0][0], "%d", oldPosition);
     //displays[0][0] =oldPosition;
-    updateDisplays();
+    updateDisplay(0);
     Serial.println(newPosition);
   }
 }
