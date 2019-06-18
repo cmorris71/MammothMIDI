@@ -5,22 +5,22 @@
 #define HELD_BUTTON_STATE 3
 #define DOUBLE_BUTTON_STATE 4
 
-bool debug = false;
+bool debug = true;
 
 char displays[3][2][24];
 
 bool toggle[7][7];
 bool toggleHold[7];
 
-// Create pushbuttons on digital pins 2-9
+// Create pushbuttons on digital pins 5-12
 PushButton footSwitch[7] = {
   0,
-  PushButton(2),
-  PushButton(3),
-  PushButton(4),
   PushButton(5),
   PushButton(6),
-  PushButton(7)
+  PushButton(7),
+  PushButton(8),
+  PushButton(9),
+  PushButton(10)
 };
 
 int state = WAITING_STATE; //Initial state

@@ -5,6 +5,7 @@
 #define MUX_Address 0x70 // TCA9548A Encoders address
 
 extern void updateDisplays();
+extern void updateDisplay(int display);
 extern void megaDisplay();
 extern void sendSong();
 extern void midiPC(int songNumber, int midiChannel);
@@ -31,8 +32,8 @@ void p1_s2() {
   sendSong();
 };
 void p1_s3() {
-  song = 4;
-  sendSong();
+EEPROM.put(10, displays[0][0]);
+if(debug) Serial.println("EEPROM put");
 };
 void p1_s4() {
     song = 0;
@@ -43,8 +44,9 @@ void p1_s5() {
   sendSong();
 };
 void p1_s6() {
-    song = 2;
-  sendSong();
+EEPROM.get(10,displays[0][0]);
+if(debug) Serial.println("EEPROM get" + String(displays[0][0]));
+updateDisplay(0);
 
 };
 void p2_display() {

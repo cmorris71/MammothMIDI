@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <Encoder.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
+#include <EEPROM.h>
 #include "globals.h"
 #include "config.h"
 
@@ -110,26 +111,26 @@ void updateDisplays() {
   }
 }
 void updateDisplay(int disp) {
-    tcaSelect(disp);
-    
-    u8g.firstPage();
-    do {
-      
-      //u8g.setFont(u8g_font_helvB12);
-      //u8g.setFontPosBaseline();
-      u8g.drawStr(64 - u8g.getStrWidth(displays[disp][0]) / 2, 26, displays[disp][0]);
-    } while ( u8g.nextPage() );
-    //delay(10);
-  }
+  tcaSelect(disp);
 
-void sendSong(){
+  u8g.firstPage();
+  do {
+
+    //u8g.setFont(u8g_font_helvB12);
+    //u8g.setFontPosBaseline();
+    u8g.drawStr(64 - u8g.getStrWidth(displays[disp][0]) / 2, 26, displays[disp][0]);
+  } while ( u8g.nextPage() );
+  //delay(10);
+}
+
+void sendSong() {
   midiPC(song, HX_STOMP);
   midiPC(song * 2, TIMELINE);
   midiPC(song * 3, BIGSKY);
 }
 
 void megaDisplay () {
- 
+
 
 }
 //========= Execute action for double switch press =========
@@ -145,7 +146,7 @@ void doubleAction()
 void holdAction()
 {
   int s = whichSwitch();
-  if(debug) Serial.println("hold action fired :" + String(s));
+  if (debug) Serial.println("hold action fired :" + String(s));
   holdActions[s]();
 }
 
@@ -157,10 +158,10 @@ void clickAction()
   if (debug)Serial.println("clickAction Detected" + String(page) + " " + String(s));
 }
 
-void midiPC(int songNumber, int midiChannel){
+void midiPC(int songNumber, int midiChannel) {
   MIDI.sendProgramChange(songNumber, midiChannel);
 }
-void midiCC(int midiControler, int midiValue, int midiChannel){
+void midiCC(int midiControler, int midiValue, int midiChannel) {
   MIDI.sendControlChange(midiControler, midiValue, midiChannel);
 }
 
@@ -171,7 +172,7 @@ void setup() {
     pinMode(5 + i, INPUT_PULLUP);
     footSwitch[i].setActiveLogic(LOW);
     footSwitch[i].disableDoubleClick();
-    footSwitch[i].setHoldTime(500); 
+    footSwitch[i].setHoldTime(500);
   }
 
   MIDI.begin(MIDI_CHANNEL_OFF);
@@ -182,7 +183,7 @@ void setup() {
   while (! Serial); // Wait untilSerial is ready - Leonardo
 
   displayInit(); // Initialize the displays
-  
+
   p1_display();
 
 }
@@ -234,14 +235,14 @@ void loop() {
   if (state == WAITING_STATE and active == 1)
   {
     state =   PRE_BUTTON_STATE;
-    if(debug) Serial.println("pre button state");
+    if (debug) Serial.println("pre button state");
   }
 
   //DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 2)
   {
     state = DOUBLE_BUTTON_STATE;
-    if(debug) Serial.println("double button state");
+    if (debug) Serial.println("double button state");
     doubleAction();
   }
 
@@ -253,7 +254,7 @@ void loop() {
       if (footSwitch[i].isHeld())
       {
         state = HELD_BUTTON_STATE;
-        if(debug) Serial.println("held button state");
+        if (debug) Serial.println("held button state");
         holdAction();
         break;
       }
@@ -268,7 +269,7 @@ void loop() {
       if (footSwitch[i].isReleased())
       {
         state = CLICKED_BUTTON_STATE;
-        if(debug) Serial.println("clicked button state");
+        if (debug) Serial.println("clicked button state");
         clickAction();
         break;
       }
@@ -277,8 +278,10 @@ void loop() {
 
   // =============== Encoder ============
   long newPosition = myEnc.read();
-  if (newPosition != oldPosition) {
-    oldPosition = newPosition/4;
+  if (newPosition != oldPosition * 4)
+  {
+    oldPosition = newPosition / 4;
+    Serial.println("Inside encoder loop now");
     sprintf(displays[0][0], "%d", oldPosition);
     //displays[0][0] =oldPosition;
     updateDisplay(0);
