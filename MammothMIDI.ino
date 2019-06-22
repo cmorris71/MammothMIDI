@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <Encoder.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
+#include <extEEPROM.h>    //https://github.com/PaoloP74/extEEPROM
 #include <EEPROM.h>
 #include "globals.h"
 #include "config.h"
@@ -14,6 +15,13 @@
      PIN 4 ON THE SOCKET GOES TO A 220ohm RESISTOR AND THEN TO THE 5V PIN ON THE ARDUINO.
      PIN 5 ON THE SOCKET GOES TO A 220ohm RESISTOR AND THEN TO THE TX1 PIN ON THE ARDUINO.
 */
+
+
+//Setup external 24LC256 EEPROMs on the bus
+const uint32_t totalKBytes = 32;         //for read and write test functions
+extEEPROM eep(kbits_256, 1, 64);         //device size, number of devices, page size
+uint32_t addr = 0;
+
 
 // Create and bind the MIDI interface to the default hardware Serial port
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -95,11 +103,12 @@ void updateDisplays() {
     if (debug) Serial.println("Updating Displays");
     u8g.firstPage();
     do {
-      /******** Display Button Text  *********/
+      //      /******** Display Button Text  *********/
       u8g.setFont(u8g_font_helvB12);
       u8g.setFontPosBaseline();
       u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 26, displays[i][0]);
-      u8g.setFont(u8g_font_helvB12);
+
+      //    u8g.setFont(u8g_font_helvB12);
       u8g.setFontPosBaseline();
       u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 60, displays[i][1]);
       u8g.drawHLine(0, 35, 128);
@@ -159,11 +168,38 @@ void clickAction()
 }
 
 void midiPC(int songNumber, int midiChannel) {
+  if(debug) Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
   MIDI.sendProgramChange(songNumber, midiChannel);
 }
 void midiCC(int midiControler, int midiValue, int midiChannel) {
+  if(debug) Serial.println("Executing MIDI CC command");
   MIDI.sendControlChange(midiControler, midiValue, midiChannel);
 }
+
+
+//=========Proof of Concept ================
+void proof_of_concept() {
+  if (debug) Serial.println("Executing PoC");
+  byte eepCommand[3];
+  // read array from eeprom
+  eep.read(addr, eepCommand, 3);
+
+  // parse array & execute command
+
+  switch (eepCommand[0]) {
+    case PC:
+      midiPC(eepCommand[1], eepCommand[2]);
+      break;
+    case CC:
+      midiCC(eepCommand[1], eepCommand[2], eepCommand[3]);
+      break;
+    default:
+      break;
+  }
+
+
+}
+
 
 void setup() {
 
@@ -176,11 +212,24 @@ void setup() {
   }
 
   MIDI.begin(MIDI_CHANNEL_OFF);
-  //Serial.begin(31250);
 
   //setup serial port for monitoring
-  Serial.begin(9600);
+  if (debug){
+    Serial.begin(9600); //for serial monitoring
+  }else{
+     Serial.begin(31250); //for serial MIDI commands
+  }
+  
   while (! Serial); // Wait untilSerial is ready - Leonardo
+
+  //setup i2c eeprom connection
+  byte eepStatus = eep.begin(eep.twiClock400kHz);   //go fast!
+  if (eepStatus) {
+    if (debug) Serial.print(F("extEEPROM.begin() failed, status = "));
+    if (debug) Serial.println(eepStatus);
+    while (1);
+  }
+
 
   displayInit(); // Initialize the displays
 
@@ -281,10 +330,10 @@ void loop() {
   if (newPosition != oldPosition * 4)
   {
     oldPosition = newPosition / 4;
-    Serial.println("Inside encoder loop now");
+    if (debug) Serial.println("Inside encoder loop now");
     sprintf(displays[0][0], "%d", oldPosition);
     //displays[0][0] =oldPosition;
     updateDisplay(0);
-    Serial.println(newPosition);
+    if (debug) Serial.println(newPosition);
   }
 }

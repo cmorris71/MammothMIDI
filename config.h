@@ -10,6 +10,7 @@ extern void megaDisplay();
 extern void sendSong();
 extern void midiPC(int songNumber, int midiChannel);
 extern void midiCC(int midiController, int midiValue, int midiChannel);
+extern void proof_of_concept();
 
 typedef void (*function) ();
 
@@ -40,8 +41,7 @@ void p1_s4() {
   sendSong();
 };
 void p1_s5() {
-  song = 1;
-  sendSong();
+proof_of_concept();
 };
 void p1_s6() {
 EEPROM.get(10,displays[0][0]);

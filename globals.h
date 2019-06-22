@@ -4,8 +4,13 @@
 #define CLICKED_BUTTON_STATE 2
 #define HELD_BUTTON_STATE 3
 #define DOUBLE_BUTTON_STATE 4
+#define PC 0
+#define PC_TOGGLE 1
+#define CC 2
+#define DISPLAY 3
 
-bool debug = true;
+
+const bool debug = false;
 
 char displays[3][2][24];
 
