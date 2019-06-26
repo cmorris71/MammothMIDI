@@ -96,6 +96,22 @@ void displayInit() {
   }
 }
 
+void getConfig(){
+	//read from EEPROM
+	word eepromAddress = page * BYTES_PER_PAGE;
+	byte configAction[SIZE_OF_ACTION];
+	Serial.println("New config loading from 0x" + String(eepromAddress));
+	
+	for (byte configButton = 0; configButton < NUMBER_OF_BUTTONS; configButton++){
+		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON; actionNo++){
+			eep.read(eepromAddress, configAction, SIZE_OF_ACTION);
+			if (configAction[0] != NO_COMMAND){
+				//array -> Struct; sturct element boundaries must lie on byte boundaries
+				memcpy(&buttonActions[configButton], configAction, SIZE_OF_ACTION); 
+			}
+		}
+	}	
+}
 
 void updateDisplays() {
   for (int i = 0; i < 4; i++) {
@@ -162,9 +178,22 @@ void holdAction()
 //========= Execute action for single button click =========
 void clickAction()
 {
-  int s = whichSwitch(0);
-  clickActions[page][s]();
-  if (debug)Serial.println("clickAction Detected" + String(page) + " " + String(s));
+	int s = whichSwitch(0);
+	for (int i = 0; i < ACTIONS_PER_BUTTON; i++){
+		
+		switch (buttonActions[s][i].command) {
+		case PC:
+			midiPC(buttonActions[s][i].param1, buttonActions[s][i].param2);
+			break;
+		case CC:
+			midiCC(buttonActions[s][i].param1, buttonActions[s][i].param2, buttonActions[s][i].param3);
+			break;
+		default:
+			break;
+		}
+
+	}
+	if (debug)Serial.println("clickAction Detected " + String(page) + "-" + String(s));
 }
 
 void midiPC(int songNumber, int midiChannel) {
@@ -233,7 +262,7 @@ void setup() {
 
   displayInit(); // Initialize the displays
 
-  p1_display();
+  //p1_display();
 
 }
 //*****************************************************************************
@@ -284,14 +313,14 @@ void loop() {
   if (state == WAITING_STATE and active == 1)
   {
     state =   PRE_BUTTON_STATE;
-    if (debug) Serial.println("pre button state");
+    //if (debug) Serial.println("pre button state");
   }
 
   //DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
   if (state == PRE_BUTTON_STATE and active == 2)
   {
     state = DOUBLE_BUTTON_STATE;
-    if (debug) Serial.println("double button state");
+    //if (debug) Serial.println("double button state");
     doubleAction();
   }
 
@@ -303,7 +332,7 @@ void loop() {
       if (footSwitch[i].isHeld())
       {
         state = HELD_BUTTON_STATE;
-        if (debug) Serial.println("held button state");
+        //if (debug) Serial.println("held button state");
         holdAction();
         break;
       }
@@ -318,7 +347,7 @@ void loop() {
       if (footSwitch[i].isReleased())
       {
         state = CLICKED_BUTTON_STATE;
-        if (debug) Serial.println("clicked button state");
+        //if (debug) Serial.println("clicked button state");
         clickAction();
         break;
       }

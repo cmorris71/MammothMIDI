@@ -8,11 +8,17 @@
 #define PC_TOGGLE 1
 #define CC 2
 #define DISPLAY 3
+#define NO_COMMAND 255
+#define ACTIONS_PER_BUTTON 4//12
+#define SIZE_OF_ACTION 8
+#define BYTES_PER_PAGE 768
+#define NUMBER_OF_PAGES 12
+#define NUMBER_OF_BUTTONS 6
 
 
-const bool debug = false;
+const bool debug = true;
 
-char displays[3][2][24];
+char displays[3][2][12];
 
 bool toggle[7][7];
 bool toggleHold[7];
@@ -33,3 +39,16 @@ int song = 0; //Song number for PC messages
 int page = 1; //Page number for changing MammothMIDI pedal banks
 
 byte active = 0; //Number of active switches
+
+struct configCommand{
+	byte command;
+	byte param1;
+	byte param2;
+	byte param3;
+	byte param4;
+	byte param5;
+	byte param6;
+	byte param7;	
+};
+
+configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON];
