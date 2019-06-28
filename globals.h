@@ -9,9 +9,9 @@
 #define CC 2
 #define DISPLAY 3
 #define NO_COMMAND 255
-#define ACTIONS_PER_BUTTON 4//12
+#define ACTIONS_PER_BUTTON 8//12
 #define SIZE_OF_ACTION 8
-#define BYTES_PER_PAGE 768
+#define BYTES_PER_PAGE 384
 #define NUMBER_OF_PAGES 12
 #define NUMBER_OF_BUTTONS 6
 

@@ -88,8 +88,6 @@ void holdS6() {
 
 
 
-
-
 function doubleActions[7][7] {
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL},
   { NULL, NULL, s1_s2, NULL, NULL, NULL, NULL},
