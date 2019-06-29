@@ -4,7 +4,6 @@
 #include <Encoder.h>
 #include <PushButton.h> // Include the PushButton library from https://github.com/kristianklein/PushButton
 #include <extEEPROM.h>    //https://github.com/PaoloP74/extEEPROM
-#include <EEPROM.h>
 #include "globals.h"
 #include "config.h"
 
@@ -263,28 +262,6 @@ void midiCC(int midiControler, int midiValue, int midiChannel) {
 }
 
 
-//=========Proof of Concept ================
-void proof_of_concept() {
-	if (debug) Serial.println("Executing PoC");
-	byte eepCommand[3];
-	// read array from eeprom
-	eep.read(addr, eepCommand, 3);
-
-	// parse array & execute command
-
-	switch (eepCommand[0]) {
-	case PC:
-		midiPC(eepCommand[1], eepCommand[2]);
-		break;
-	case CC:
-		midiCC(eepCommand[1], eepCommand[2], eepCommand[3]);
-		break;
-	default:
-		break;
-	}
-
-
-}
 
 void setup() {
 
