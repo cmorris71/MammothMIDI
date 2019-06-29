@@ -40,7 +40,7 @@ void s2_s3() {
 };
 
 void s4_s5() {
-  page--;
+  if (page > 0) page--;
 
 //  clickActions[page][0]();
 //
@@ -50,7 +50,7 @@ void s4_s5() {
 };
 
 void s5_s6() {
-  page++;
+  if (page<12) page++;
 
 //  clickActions[page][0]();
 //  updateDisplays();
@@ -69,12 +69,12 @@ void holdS1() {
   if (debug) Serial.print("s1 held");
 };
 void holdS2() {
+
+};
+void holdS3() {
   midiPC(0, HX_STOMP);
   midiPC(0 * 2, TIMELINE);
   midiPC(0 * 3, BIGSKY);
-};
-void holdS3() {
-
 };
 void holdS4() {
 

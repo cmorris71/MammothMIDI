@@ -24,7 +24,7 @@ const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
 
 const bool debug = true;
 
-char displays[6][32];
+char displays[6][2][32];
 
 bool toggle[7][7];
 bool toggleHold[7];
@@ -57,4 +57,4 @@ struct configCommand{
 	byte param7;	
 };
 
-configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON];
+configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON-6];

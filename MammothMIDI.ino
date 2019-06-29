@@ -1,3 +1,7 @@
+/* LEFTOFF
+MIDI commands wern't being sent. verify WhichSwitch and midiPC/CC are working
+*/
+
 #include <U8glib.h>
 #include <MIDI.h> // MIDI Library by Forty Seven Effects Version 4.3.1
 #include <Wire.h>
@@ -26,7 +30,7 @@ uint32_t addr = 0;
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 // Setup encoder. Best to use interrupt pins
-Encoder myEnc(2, 3);
+// Encoder myEnc(2, 3);
 
 long oldPosition  = -999;
 
@@ -36,14 +40,17 @@ U8GLIB_SH1106_128X64 u8g(U8G_I2C_OPT_NONE);
 
 //========= Returns number for active switch starting with 'start' =========
 int whichSwitch(int start = 0) {
-
+	if (debug) Serial.println("Entered Which Switch");
 	if (state == CLICKED_BUTTON_STATE)
 	{
-		//Serial.printlf("clicked button state");
+		
 		for (int i = start; i < 8; i++)
 		{
 			if (footSwitch[i].isReleased())
 			{
+				if (debug) Serial.print(F("Returning button: "));
+				if (debug) Serial.print(i);
+				delay(20);
 				return (i);
 			}
 		}
@@ -60,6 +67,7 @@ int whichSwitch(int start = 0) {
 		}
 	}
 
+	Serial.println(F("WhichSwitch returned no switch"));
 	return -1;
 
 }
@@ -89,7 +97,7 @@ void tcaSelect(uint8_t i2c_bus) {
 
 // Initialize the displays
 void displayInit() {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 6; i++) {
 		tcaSelect(i);   // Loop through each connected displays on the I2C buses
 		u8g.begin();  // Initialize display
 	}
@@ -131,13 +139,13 @@ void getConfig(){
 	//read button actions from EEPROM
 	char str[bytesPerString];
 	word eepromAddress = (page-1) * BYTES_PER_PAGE;
-	if (debug) Serial.println(eepromAddress);//Serial.print(String(testVar));
+	//if (debug Serial.println(eepromAddress);//Serial.print(String(testVar));
 	byte configAction[SIZE_OF_ACTION];
 
-	if (debug) Serial.println(F("Getting configuration."));
+	//if (debug Serial.println(F("Getting configuration."));
 	
 	for (byte configButton = 0; configButton < NUMBER_OF_BUTTONS; configButton++){
-		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON; actionNo++){
+		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON-6; actionNo++){
 			eep.read(eepromAddress, configAction, SIZE_OF_ACTION);
 			delay(10);
 			if (configAction[0] != NO_COMMAND){
@@ -157,7 +165,9 @@ void getConfig(){
 		
 		eep.read(eepromAddress, str, bytesPerString);
 		memcpy(&displays[configButton][0], str, bytesPerString);
-		//eepromAddress += bytesPerString;
+		eepromAddress += bytesPerString;
+		eep.read(eepromAddress, str, bytesPerString);
+		memcpy(&displays[configButton][1], str, bytesPerString);
 		//Serial.print(("Button")+ String(configButton) + ": ");
 		//delay(20);
 		//Serial.println(str);
@@ -166,26 +176,26 @@ void getConfig(){
 
 	}
 	updateDisplays();
-	//if(debug) printConfig();
+	////if (debug printConfig();
 }
 
 void updateDisplays() {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 6; i++) {
 		tcaSelect(i);
-		if (debug) Serial.println(F("Updating Displays"));
+		//if (debug Serial.println(F("Updating Displays"));
 		u8g.firstPage();
 		do {
 			//      /******** Display Button Text  *********/
-			u8g.setFont(u8g_font_helvB12);
+			u8g.setFont(u8g_font_helvB14);
 			u8g.setFontPosBaseline();
-			u8g.drawStr(64 - u8g.getStrWidth(displays[i+3]) / 2, 26, displays[i+3]);
+			u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 26, displays[i][0]);
 
 			//    u8g.setFont(u8g_font_helvB12);
 			u8g.setFontPosBaseline();
-			u8g.drawStr(64 - u8g.getStrWidth(displays[i]) / 2, 60, displays[i]);
-			u8g.drawHLine(0, 35, 128);
-			u8g.drawHLine(0, 36, 128);
-			u8g.drawHLine(0, 37, 128);
+			u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 50, displays[i][1]);
+			// u8g.drawHLine(0, 35, 128);
+			// u8g.drawHLine(0, 36, 128);
+			// u8g.drawHLine(0, 37, 128);
 			/***************************************/
 		} while ( u8g.nextPage() );
 		delay(50);
@@ -195,12 +205,20 @@ void updateDisplay(int disp) {
 	tcaSelect(disp);
 
 	u8g.firstPage();
-	do {
+do {
+			//      /******** Display Button Text  *********/
+			u8g.setFont(u8g_font_helvB12);
+			u8g.setFontPosBaseline();
+			u8g.drawStr(64 - u8g.getStrWidth(displays[disp][0]) / 2, 26, displays[disp][0]);
 
-		//u8g.setFont(u8g_font_helvB12);
-		//u8g.setFontPosBaseline();
-		u8g.drawStr(64 - u8g.getStrWidth(displays[disp]) / 2, 26, displays[disp]);
-	} while ( u8g.nextPage() );
+			//    u8g.setFont(u8g_font_helvB12);
+			u8g.setFontPosBaseline();
+			u8g.drawStr(64 - u8g.getStrWidth(displays[disp][1]) / 2, 60, displays[disp][1]);
+			// u8g.drawHLine(0, 35, 128);
+			// u8g.drawHLine(0, 36, 128);
+			// u8g.drawHLine(0, 37, 128);
+			/***************************************/
+		} while ( u8g.nextPage() );
 	//delay(10);
 }
 
@@ -227,18 +245,22 @@ void doubleAction()
 void holdAction()
 {
 	int s = whichSwitch();
-	if (debug) Serial.println("hold action fired :" + String(s));
+	//if (debug Serial.println("hold action fired :" + String(s));
 	holdActions[s]();
 }
 
 //========= Execute action for single button click =========
 void clickAction()
 {
-	int s = whichSwitch(0) -1;
+	int s = whichSwitch(0);
+	s--;
 	for (int i = 0; i < ACTIONS_PER_BUTTON; i++){
-		//if(debug) Serial.println("Executing action " + String(i) + " for switch " + String(s));
+		//Serial.println("Executing action " + String(i) + " for switch " + String(s));
+		//Serial.println(F("executing click action"));
 		switch (buttonActions[s][i].command) {
 		case PC:
+			Serial.print(F("PC command detected. S: "));
+			Serial.println(String(s));
 			midiPC(buttonActions[s][i].param1, buttonActions[s][i].param2);
 			break;
 		case CC:
@@ -249,15 +271,15 @@ void clickAction()
 		}
 
 	}
-	if (debug)Serial.println("clickAction Detected " + String(page) + "-" + String(s));
+	//if (debugSerial.println("clickAction Detected " + String(page) + "-" + String(s));
 }
 
 void midiPC(int songNumber, int midiChannel) {
-	if(debug) Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
+	Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
 	if(!debug) MIDI.sendProgramChange(songNumber, midiChannel);
 }
 void midiCC(int midiControler, int midiValue, int midiChannel) {
-	if(debug) Serial.println("Executing MIDI CC command");
+	//if (debug Serial.println("Executing MIDI CC command");
 	if(!debug)MIDI.sendControlChange(midiControler, midiValue, midiChannel);
 }
 
@@ -282,19 +304,21 @@ void setup() {
 		Serial.begin(31250); //for serial MIDI commands
 	}
 
+
 	while (! Serial); // Wait untilSerial is ready - Leonardo
 
 	//setup i2c eeprom connection
 	byte eepStatus = eep.begin(eep.twiClock400kHz);   //go fast!
 	if (eepStatus) {
-		if (debug) Serial.print(F("extEEPROM.begin() failed, status = "));
-		if (debug) Serial.println(eepStatus);
+		//if (debug Serial.print(F("extEEPROM.begin() failed, status = "));
+		//if (debug Serial.println(eepStatus);
 		while (1);
 	}
 
 
 	displayInit(); // Initialize the displays
 
+	getConfig();
 	//p1_display();
 
 }
@@ -339,21 +363,21 @@ void loop() {
 	if (active == 0 and state != PRE_BUTTON_STATE)
 	{
 		state = WAITING_STATE;
-		//if(debug) Serial.println("waiting state");
+		////if (debug Serial.println("waiting state");
 	}
 
 	//DETECT STATE WHERE 1 BUTTON HAS BEEN PRESSED
 	if (state == WAITING_STATE and active == 1)
 	{
 		state =   PRE_BUTTON_STATE;
-		//if (debug) Serial.println("pre button state");
+		////if (debug Serial.println("pre button state");
 	}
 
 	//DETECT STATE WHERE TWO BUTTONS HAVE BEEN PRESSED
 	if (state == PRE_BUTTON_STATE and active == 2)
 	{
 		state = DOUBLE_BUTTON_STATE;
-		//if (debug) Serial.println("double button state");
+		////if (debug Serial.println("double button state");
 		doubleAction();
 	}
 
@@ -365,7 +389,7 @@ void loop() {
 			if (footSwitch[i].isHeld())
 			{
 				state = HELD_BUTTON_STATE;
-				//if (debug) Serial.println("held button state");
+				////if (debug Serial.println("held button state");
 				holdAction();
 				break;
 			}
@@ -380,7 +404,7 @@ void loop() {
 			if (footSwitch[i].isReleased())
 			{
 				state = CLICKED_BUTTON_STATE;
-				//if (debug) Serial.println("clicked button state");
+				////if (debug Serial.println("clicked button state");
 				clickAction();
 				break;
 			}
@@ -388,14 +412,14 @@ void loop() {
 	}
 
 	// =============== Encoder ============
-	long newPosition = myEnc.read();
-	if (newPosition != oldPosition * 4)
-	{
-		oldPosition = newPosition / 4;
-		if (debug) Serial.println("Inside encoder loop now");
-		sprintf(displays[0][0], "%d", oldPosition);
-		//displays[0][0] =oldPosition;
-		updateDisplay(0);
-		if (debug) Serial.println(newPosition);
-	}
+	// long newPosition = myEnc.read();
+	// if (newPosition != oldPosition * 4)
+	// {
+		// oldPosition = newPosition / 4;
+		// if (debug Serial.println("Inside encoder loop now");
+		// sprintf(displays[0][0], "%d", oldPosition);
+		// displays[0][0] =oldPosition;
+		// updateDisplay(0);
+		// if (debug Serial.println(newPosition);
+	// }
 }
