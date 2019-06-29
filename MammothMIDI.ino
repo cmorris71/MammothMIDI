@@ -129,8 +129,8 @@ void printBytes(byte read[8]){
 
 
 void getConfig(){
-	//read from EEPROM
-	
+	//read button actions from EEPROM
+	char str[bytesPerString];
 	word eepromAddress = (page-1) * BYTES_PER_PAGE;
 	if (debug) Serial.println(eepromAddress);//Serial.print(String(testVar));
 	byte configAction[SIZE_OF_ACTION];
@@ -149,13 +149,29 @@ void getConfig(){
 			}
 			eepromAddress += SIZE_OF_ACTION;
 		}
-	}	
-	
-	if(debug) printConfig();
+		
+		
+		//read display text from EEPROM
+		eepromAddress = stringAddrStart 
+		+ (page-1) *  stringBytesPerPage
+		+ configButton * stringBytesPerButton;
+		
+		eep.read(eepromAddress, str, bytesPerString);
+		memcpy(&displays[configButton][0], str, bytesPerString);
+		//eepromAddress += bytesPerString;
+		//Serial.print(("Button")+ String(configButton) + ": ");
+		//delay(20);
+		//Serial.println(str);
+		//delay(20);
+		//displays[configButton][0] = str;
+
+	}
+	updateDisplays();
+	//if(debug) printConfig();
 }
 
 void updateDisplays() {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 3; i++) {
 		tcaSelect(i);
 		if (debug) Serial.println(F("Updating Displays"));
 		u8g.firstPage();
@@ -163,11 +179,11 @@ void updateDisplays() {
 			//      /******** Display Button Text  *********/
 			u8g.setFont(u8g_font_helvB12);
 			u8g.setFontPosBaseline();
-			u8g.drawStr(64 - u8g.getStrWidth(displays[i][0]) / 2, 26, displays[i][0]);
+			u8g.drawStr(64 - u8g.getStrWidth(displays[i+3]) / 2, 26, displays[i+3]);
 
 			//    u8g.setFont(u8g_font_helvB12);
 			u8g.setFontPosBaseline();
-			u8g.drawStr(64 - u8g.getStrWidth(displays[i][1]) / 2, 60, displays[i][1]);
+			u8g.drawStr(64 - u8g.getStrWidth(displays[i]) / 2, 60, displays[i]);
 			u8g.drawHLine(0, 35, 128);
 			u8g.drawHLine(0, 36, 128);
 			u8g.drawHLine(0, 37, 128);
@@ -184,7 +200,7 @@ void updateDisplay(int disp) {
 
 		//u8g.setFont(u8g_font_helvB12);
 		//u8g.setFontPosBaseline();
-		u8g.drawStr(64 - u8g.getStrWidth(displays[disp][0]) / 2, 26, displays[disp][0]);
+		u8g.drawStr(64 - u8g.getStrWidth(displays[disp]) / 2, 26, displays[disp]);
 	} while ( u8g.nextPage() );
 	//delay(10);
 }

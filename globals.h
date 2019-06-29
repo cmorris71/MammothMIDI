@@ -15,10 +15,16 @@
 #define NUMBER_OF_PAGES 12
 #define NUMBER_OF_BUTTONS 6
 
+const word stringAddrStart      = 4608;
+const int  stringsPerButton     = 2;
+const int  bytesPerString       = 32;
+const int  stringBytesPerButton = stringsPerButton * bytesPerString;
+const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
+
 
 const bool debug = true;
 
-char displays[3][2][12];
+char displays[6][32];
 
 bool toggle[7][7];
 bool toggleHold[7];
