@@ -17,7 +17,7 @@
 
 const word stringAddrStart      = 4608;
 const int  stringsPerButton     = 2;
-const int  bytesPerString       = 32;
+const int  bytesPerString       = 32; 
 const int  stringBytesPerButton = stringsPerButton * bytesPerString;
 const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
 
