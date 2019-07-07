@@ -21,9 +21,8 @@ WIRING INSTRUCTIONS
 
 
 //Setup external 24LC256 EEPROMs on the bus
-const uint32_t totalKBytes = 32;         //for read and write test functions
 extEEPROM eep(kbits_256, 1, 64);         //device size, number of devices, page size
-uint32_t addr = 0;
+
 
 
 // Create and bind the MIDI interface to the default hardware Serial port
@@ -40,7 +39,7 @@ U8GLIB_SH1106_128X64 u8g(U8G_I2C_OPT_NONE);
 
 //========= Returns number for active switch starting with 'start' =========
 int whichSwitch(int start = 0) {
-	if (debug) Serial.println("Entered Which Switch");
+	//if (debug) Serial.println("Entered Which Switch");
 	if (state == CLICKED_BUTTON_STATE)
 	{
 		
@@ -48,8 +47,8 @@ int whichSwitch(int start = 0) {
 		{
 			if (footSwitch[i].isReleased())
 			{
-				if (debug) Serial.print(F("Returning button: "));
-				if (debug) Serial.print(i);
+				//if (debug) Serial.print(F("Returning button: "));
+				//if (debug) Serial.print(i);
 				delay(20);
 				return (i);
 			}
@@ -67,7 +66,7 @@ int whichSwitch(int start = 0) {
 		}
 	}
 
-	Serial.println(F("WhichSwitch returned no switch"));
+	//Serial.println(F("WhichSwitch returned no switch"));
 	return -1;
 
 }
@@ -106,7 +105,7 @@ void displayInit() {
 void printConfig(){
 	Serial.println(F("Printing Config"));
 	for (int pcbutton = 0; pcbutton < NUMBER_OF_BUTTONS; pcbutton++){
-		Serial.println(String(pcbutton));
+		//Serial.println(String(pcbutton));
 		for (int act = 0; act < ACTIONS_PER_BUTTON; act++){
 			Serial.print(String(buttonActions[pcbutton][act].command)+ ".");
 			Serial.print(String(buttonActions[pcbutton][act].param1) + ".");
@@ -122,7 +121,7 @@ void printConfig(){
 
 void printBytes(byte read[8]){
 	
-	Serial.println(String(read[2]));
+	//Serial.println(String(read[2]));
 	// Serial.println(	"    " +String(read[0]) +"."+
 	// String(read[1]) + "."+
 	// String(read[2]) + "."+
@@ -139,35 +138,37 @@ void getConfig(){
 	//read button actions from EEPROM
 	char str[bytesPerString];
 	word eepromAddress = (page-1) * BYTES_PER_PAGE;
+	word eepromDispAddress;
 	//if (debug Serial.println(eepromAddress);//Serial.print(String(testVar));
 	byte configAction[SIZE_OF_ACTION];
 
 	//if (debug Serial.println(F("Getting configuration."));
+			//read display text from EEPROM
+		eepromDispAddress = stringAddrStart + (page-1) *  stringBytesPerPage;
 	
 	for (byte configButton = 0; configButton < NUMBER_OF_BUTTONS; configButton++){
-		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON-6; actionNo++){
+		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON; actionNo++){
+			//Serial.print(F("Reading from address: "));
+			//Serial.println(String(eepromAddress));
 			eep.read(eepromAddress, configAction, SIZE_OF_ACTION);
+			//for(byte s=0; s< SIZE_OF_ACTION; s++) Serial.print(String(configAction[s]));
+			//Serial.println(F(""));
 			delay(10);
-			if (configAction[0] != NO_COMMAND){
+			//if (configAction[0] != NO_COMMAND){
 				//printBytes(configAction);
 				//array -> Struct; sturct element boundaries must lie on byte boundaries
 				memcpy(&buttonActions[configButton][actionNo], configAction, SIZE_OF_ACTION); 
 				//Serial.println(String(buttonActions[configButton][actionNo].param3));
-			}
+			//} 
 			eepromAddress += SIZE_OF_ACTION;
 		}
-		
-		
-		//read display text from EEPROM
-		eepromAddress = stringAddrStart 
-		+ (page-1) *  stringBytesPerPage
-		+ configButton * stringBytesPerButton;
-		
-		eep.read(eepromAddress, str, bytesPerString);
+
+		eep.read(eepromDispAddress, str, bytesPerString);
 		memcpy(&displays[configButton][0], str, bytesPerString);
-		eepromAddress += bytesPerString;
-		eep.read(eepromAddress, str, bytesPerString);
+		eepromDispAddress += bytesPerString;
+		eep.read(eepromDispAddress, str, bytesPerString);
 		memcpy(&displays[configButton][1], str, bytesPerString);
+		eepromDispAddress += bytesPerString;
 		//Serial.print(("Button")+ String(configButton) + ": ");
 		//delay(20);
 		//Serial.println(str);
@@ -175,9 +176,22 @@ void getConfig(){
 		//displays[configButton][0] = str;
 
 	}
+	
 	updateDisplays();
-	////if (debug printConfig();
+	//if (debug) printConfig();
 }
+
+// void printConfig(){
+	// for (byte b=0; b<6;b++){
+		// for (byte a =0; a<6; a++){
+			// Serial.print(buttonActions[b][a].command);Serial.print(".");
+			// Serial.print(buttonActions[b][a].param1);Serial.print(".");
+			// Serial.print(buttonActions[b][a].param2);Serial.print(".");
+			// Serial.print(buttonActions[b][a].param3);Serial.print(".");
+			// Serial.println(buttonActions[b][a].param4);
+		// }
+	// }
+// }
 
 void updateDisplays() {
 	for (int i = 0; i < 6; i++) {
@@ -259,14 +273,16 @@ void clickAction()
 		//Serial.println(F("executing click action"));
 		switch (buttonActions[s][i].command) {
 		case PC:
-			Serial.print(F("PC command detected. S: "));
-			Serial.println(String(s));
+			if(debug)Serial.print(F("PC command detected..."));
 			midiPC(buttonActions[s][i].param1, buttonActions[s][i].param2);
 			break;
 		case CC:
+			if(debug)Serial.print(F("CC command detected..."));
 			midiCC(buttonActions[s][i].param1, buttonActions[s][i].param2, buttonActions[s][i].param3);
 			break;
 		default:
+			if(debug) Serial.print(F("Bogusness detected..."));
+			//if(debug) Serial.println(String(buttonActions[s][i].command));
 			break;
 		}
 
@@ -275,7 +291,7 @@ void clickAction()
 }
 
 void midiPC(int songNumber, int midiChannel) {
-	Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
+	//Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
 	if(!debug) MIDI.sendProgramChange(songNumber, midiChannel);
 }
 void midiCC(int midiControler, int midiValue, int midiChannel) {

@@ -9,7 +9,7 @@
 #define CC 2
 #define DISPLAY 3
 #define NO_COMMAND 255
-#define ACTIONS_PER_BUTTON 8//12
+#define ACTIONS_PER_BUTTON 6
 #define SIZE_OF_ACTION 8
 #define BYTES_PER_PAGE 384
 #define NUMBER_OF_PAGES 12
@@ -22,7 +22,7 @@ const int  stringBytesPerButton = stringsPerButton * bytesPerString;
 const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
 
 
-const bool debug = true;
+const bool debug = false;
 
 char displays[6][2][32];
 
@@ -57,4 +57,4 @@ struct configCommand{
 	byte param7;	
 };
 
-configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON-6];
+configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON];
