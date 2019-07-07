@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name MammothMIDI_Library)(type Legacy)(uri ${KIPRJMOD}/MammothMIDI_Library.lib)(options "")(descr ""))
+)
