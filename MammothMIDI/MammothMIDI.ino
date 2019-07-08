@@ -114,7 +114,7 @@ void printConfig(){
 			Serial.print(String(buttonActions[pcbutton][act].param4) + ".");
 			Serial.print(String(buttonActions[pcbutton][act].param5) + ".");
 			Serial.print(String(buttonActions[pcbutton][act].param6) + ".");
-			Serial.println(String(buttonActions[pcbutton][act].param7));
+			Serial.println(String(buttonActions[pcbutton][act].device));
 		}
 	}
 }
@@ -138,6 +138,7 @@ void getConfig(){
 	//read button actions from EEPROM
 	char str[bytesPerString];
 	word eepromAddress = (page-1) * BYTES_PER_PAGE;
+	
 	word eepromDispAddress;
 	//if (debug Serial.println(eepromAddress);//Serial.print(String(testVar));
 	byte configAction[SIZE_OF_ACTION];
@@ -148,15 +149,14 @@ void getConfig(){
 	
 	for (byte configButton = 0; configButton < NUMBER_OF_BUTTONS; configButton++){
 		for (byte actionNo=0; actionNo< ACTIONS_PER_BUTTON; actionNo++){
-			//Serial.print(F("Reading from address: "));
-			//Serial.println(String(eepromAddress));
+			// Serial.print(F("Reading from address: "));
+			// Serial.println(String(eepromAddress));
+			delay(10);
 			eep.read(eepromAddress, configAction, SIZE_OF_ACTION);
-			//for(byte s=0; s< SIZE_OF_ACTION; s++) Serial.print(String(configAction[s]));
+
 			//Serial.println(F(""));
 			delay(10);
-			//if (configAction[0] != NO_COMMAND){
-				//printBytes(configAction);
-				//array -> Struct; sturct element boundaries must lie on byte boundaries
+
 				memcpy(&buttonActions[configButton][actionNo], configAction, SIZE_OF_ACTION); 
 				//Serial.println(String(buttonActions[configButton][actionNo].param3));
 			//} 
@@ -273,12 +273,15 @@ void clickAction()
 		//Serial.println(F("executing click action"));
 		switch (buttonActions[s][i].command) {
 		case PC:
-			if(debug)Serial.print(F("PC command detected..."));
-			midiPC(buttonActions[s][i].param1, buttonActions[s][i].param2);
+			if(debug)Serial.print(F("PC command detected. Device:"));
+			if(debug)Serial.println(buttonActions[s][i].device);
+			if(debug)Serial.print(F("Command: "));
+			if(debug)Serial.println(buttonActions[s][i].command);
+			midiPC(buttonActions[s][i].param1, buttonActions[s][i].device);
 			break;
 		case CC:
 			if(debug)Serial.print(F("CC command detected..."));
-			midiCC(buttonActions[s][i].param1, buttonActions[s][i].param2, buttonActions[s][i].param3);
+			midiCC(buttonActions[s][i].param1, buttonActions[s][i].param2, buttonActions[s][i].device);
 			break;
 		default:
 			if(debug) Serial.print(F("Bogusness detected..."));
@@ -292,6 +295,7 @@ void clickAction()
 
 void midiPC(int songNumber, int midiChannel) {
 	//Serial.println("Executing MIDI PC command. PC: " + String(songNumber) + "  Channel: " + String(midiChannel));
+	delay(10);
 	if(!debug) MIDI.sendProgramChange(songNumber, midiChannel);
 }
 void midiCC(int midiControler, int midiValue, int midiChannel) {

@@ -47,14 +47,14 @@ int page = 1; //Page number for changing MammothMIDI pedal banks
 byte active = 0; //Number of active switches
 
 struct configCommand{
+	byte device;
 	byte command;
 	byte param1;
 	byte param2;
 	byte param3;
 	byte param4;
 	byte param5;
-	byte param6;
-	byte param7;	
+	byte param6;	
 };
 
 configCommand buttonActions[NUMBER_OF_BUTTONS][ACTIONS_PER_BUTTON];

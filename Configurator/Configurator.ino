@@ -2,7 +2,7 @@
 #define BS 2 //Bigsky
 #define HX 3 //HX Stomp
 #define PC 0
-#define PT 1
+#define CT 1
 #define CC 2
 #define XX 255
 #define MUX_Address 0x70 // TCA9548A Encoders address
@@ -95,389 +95,102 @@ Control change                                                 HX = HX Stomp
 Control change toggle  
 {CT, CtrlNo1, CtrlVal1, CtrlNo2, CtrlVal2 ,...}
 */
-void readConfig(){
-
-//=============================================== PAGE 1 ================================================
-int p = 1;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "Song      ");   strcpy(d[p][5][1], "Song     ");    strcpy(d[p][6][1], "Song     ");
-strcpy(d[p][4][2], "1         ");   strcpy(d[p][5][2], "2        ");    strcpy(d[p][6][2], "3        ");
-b[p][5][1] = {PC,0,BS,0,0,0,0,0};   b[p][5][1] = {PC,1,HX,0,0,0,0,0};   b[p][6][1] = {PC,2,HX,0,0,0,0,0};
-b[p][4][2] = {PC,0,HX,0,0,0,0,0};   b[p][5][2] = {PC,2,TL,0,0,0,0,0};   b[p][6][2] = {PC,4,TL,0,0,0,0,0};
-b[p][4][3] = {PC,0,TL,0,0,0,0,0}    b[p][5][3] = {PC,3,BS,0,0,0,0,0};   b[p][6][3] = {PC,6,BS,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "Hold for ");    strcpy(d[p][5][1], "This Pedal");   strcpy(d[p][6][1], "Hold to Return");
-strcpy(d[p][4][2], "Tuner    ");    strcpy(d[p][5][2], "Is Awesome");   strcpy(d[p][6][2], "To Preset 1   ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
 
 
-//================================================ PAGE 2 ===============================================
-p = 2;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "Song     ");    strcpy(d[p][5][1], "Song     ");    strcpy(d[p][6][1], "Song     ");
-strcpy(d[p][4][2], "4        ");    strcpy(d[p][5][2], "5        ");    strcpy(d[p][6][2], "6        ");
-b[p][4][1] = {PC,3,HX,0,0,0,0,0};   b[p][5][1] = {PC,4,HX,0,0,0,0,0};   b[p][6][1] = {PC, 5,HX,0,0,0,0,0};
-b[p][4][2] = {PC,6,TL,0,0,0,0,0};   b[p][5][2] = {PC,8,TL,0,0,0,0,0};   b[p][6][2] = {PC,10,TL,0,0,0,0,0};
-b[p][4][3] = {PC,9,BS,0,0,0,0,0};   b[p][5][3] = {PC,12,BS,0,0,0,0,0};  b[p][6][3] = {PC,15,BS,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-//=============================================== PAGE 3 ================================================
-p = 3;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-//=============================================== PAGE 4 ================================================
-p = 4;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 5 ================================================
-p = 5;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 6 ================================================
-p = 6;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 7 ================================================
-p = 7;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 8 ================================================
-p = 8;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 9 ================================================
-p = 9;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 10 ===============================================
-p = 10;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 11 ===============================================
-p = 11;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-
-//=============================================== PAGE 12 ===============================================
-p = 12;
-
-/*-------Top Left -------------     ---------Top Middle------------     ---------Top Right------------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][4][1] = {XX,0,0,0,0,0,0,0};    b[p][5][1] = {XX,0,0,0,0,0,0,0};    b[p][6][1] = {XX,0,0,0,0,0,0,0};
-b[p][4][2] = {XX,0,0,0,0,0,0,0};    b[p][5][2] = {XX,0,0,0,0,0,0,0};    b[p][6][2] = {XX,0,0,0,0,0,0,0};
-b[p][4][3] = {XX,0,0,0,0,0,0,0};    b[p][5][3] = {XX,0,0,0,0,0,0,0};    b[p][6][3] = {XX,0,0,0,0,0,0,0};
-b[p][4][4] = {XX,0,0,0,0,0,0,0};    b[p][5][4] = {XX,0,0,0,0,0,0,0};    b[p][6][4] = {XX,0,0,0,0,0,0,0};
-b[p][4][5] = {XX,0,0,0,0,0,0,0};    b[p][5][5] = {XX,0,0,0,0,0,0,0};    b[p][6][5] = {XX,0,0,0,0,0,0,0};
-b[p][4][6] = {XX,0,0,0,0,0,0,0};    b[p][5][6] = {XX,0,0,0,0,0,0,0};    b[p][6][6] = {XX,0,0,0,0,0,0,0};
-
-/*-------Bottom Left-----------     ---------Bottom Middle----------     ---------Bottom Right---------*/
-strcpy(d[p][4][1], "         ");    strcpy(d[p][5][1], "         ");    strcpy(d[p][6][1], "         ");
-strcpy(d[p][4][2], "         ");    strcpy(d[p][5][2], "         ");    strcpy(d[p][6][2], "         ");
-b[p][1][1] = {XX,0,0,0,0,0,0,0};    b[p][2][1] = {XX,0,0,0,0,0,0,0};    b[p][3][1] = {XX,0,0,0,0,0,0,0};
-b[p][1][2] = {XX,0,0,0,0,0,0,0};    b[p][2][2] = {XX,0,0,0,0,0,0,0};    b[p][3][2] = {XX,0,0,0,0,0,0,0};
-b[p][1][3] = {XX,0,0,0,0,0,0,0};    b[p][2][3] = {XX,0,0,0,0,0,0,0};    b[p][3][3] = {XX,0,0,0,0,0,0,0};
-b[p][1][4] = {XX,0,0,0,0,0,0,0};    b[p][2][4] = {XX,0,0,0,0,0,0,0};    b[p][3][4] = {XX,0,0,0,0,0,0,0};
-b[p][1][5] = {XX,0,0,0,0,0,0,0};    b[p][2][5] = {XX,0,0,0,0,0,0,0};    b[p][3][5] = {XX,0,0,0,0,0,0,0};
-b[p][1][6] = {XX,0,0,0,0,0,0,0};    b[p][2][6] = {XX,0,0,0,0,0,0,0};    b[p][3][6] = {XX,0,0,0,0,0,0,0};
-
-}
-
-void setDisplay(int page, int display, char displayText[displayBytesPerScreen]){
-	page--;		//zero-based index to 1-based convention
-	display--;	
-	int addr = displayAddrStart
-	+ page    * displayBytesPerPage
-	+ display * displayBytesPerScreen;
+// void setDisplay(int page, int display, char displayText[displayBytesPerScreen]){
+	// page--;		//zero-based index to 1-based convention
+	// display--;	
+	// int addr = displayAddrStart
+	// + page    * displayBytesPerPage
+	// + display * displayBytesPerScreen;
 	
-	eep.write(addr, displayText, displayBytesPerScreen); //write test to EEPROM
-}
+	// eep.write(addr, displayText, displayBytesPerScreen); //write test to EEPROM
+// }
 
 
-void setButton(int page, int button, int actionNum, byte action[buttBytesPerAction]){
-	page--;		//zero-based index to 1-based convention
-	button--;
-	actionNum--; 
-	int addr = buttAddrStart
-	+ (page   * buttBytesPerPage)
-	+ (button * buttBytesPerButton)
-	+ (actionNum * buttBytesPerAction);
+// void setButton(int page, int button, int actionNum, byte action[buttBytesPerAction]){
+	// page--;		//zero-based index to 1-based convention
+	// button--;
+	// actionNum--; 
+	// int addr = buttAddrStart
+	// + (page   * buttBytesPerPage)
+	// + (button * buttBytesPerButton)
+	// + (actionNum * buttBytesPerAction);
 	
-	int status = eep.write(addr, action, buttBytesPerAction); //write test to EEPROM
+	// int status = eep.write(addr, action, buttBytesPerAction); //write test to EEPROM
 	// Serial.println("Writing to address: " + String(addr));
 	// Serial.println("Writing status: " + String(status));
-}
+// }
 
-void setString(int page, int button, int stringNum, char str[strBytesPerString]){
-	page--;		//zero-based index to 1-based convention
-	button--;
-	stringNum--; 
-	int addr = strAddrStart
-	+ (page   * strBytesPerPage)
-	+ (button * strBytesPerButton)
-	+ (stringNum * strBytesPerString);
-	int status = eep.write(addr, str, strBytesPerString); //write test to EEPROM
+// void setString(int page, int button, int stringNum, char str[strBytesPerString]){
+	// page--;		//zero-based index to 1-based convention
+	// button--;
+	// stringNum--; 
+	// int addr = strAddrStart
+	// + (page   * strBytesPerPage)
+	// + (button * strBytesPerButton)
+	// + (stringNum * strBytesPerString);
+	// int status = eep.write(addr, str, strBytesPerString); //write test to EEPROM
 	
 	// Serial.println("Writing to address: " + String(addr));
 	// Serial.println(str);
 	// Serial.println("Writing status: " + String(status));
-}
+// }
 
-void printbuttons(){
-	word addr = buttAddrStart;
-	for (int p =0; p < 2; p++){
-		Serial.println("Page: " + String(p+1) + "    Address: 0x" + String(addr));
-		for (int b=0;b<numButtons; b++){
-			Serial.println("  Button: " + String(b+1)+ "    Address: 0x" + String(addr));
-			for (int i=0; i < numActions; i++){
-				eep.read(addr, read, action_size);
-				Serial.println(	"    " +String(read[0]) +"."+
-				String(read[1]) + "."+
-				String(read[2]) + "."+
-				String(read[3]) + "."+
-				String(read[4]) + "."+
-				String(read[5]) + "."+
-				String(read[6]) + "."+
-				String(read[7]));
-				addr += buttBytesPerAction;
-			}
-		}
-	}
-}
+// void printbuttons(){
+	// word addr = buttAddrStart;
+	// for (int p =0; p < 2; p++){
+		// Serial.println("Page: " + String(p+1) + "    Address: 0x" + String(addr));
+		// for (int b=0;b<numButtons; b++){
+			// Serial.println("  Button: " + String(b+1)+ "    Address: 0x" + String(addr));
+			// for (int i=0; i < numActions; i++){
+				// eep.read(addr, read, action_size);
+				// Serial.println(	"    " +String(read[0]) +"."+
+				// String(read[1]) + "."+
+				// String(read[2]) + "."+
+				// String(read[3]) + "."+
+				// String(read[4]) + "."+
+				// String(read[5]) + "."+
+				// String(read[6]) + "."+
+				// String(read[7]));
+				// addr += buttBytesPerAction;
+			// }
+		// }
+	// }
+// }
 
-void printstrings(){
-	word addr = strAddrStart;
-	char str[32];
-	for (int p =0; p < numPages; p++){
-		Serial.println("Page: " + String(p+1));// + "    Address: 0x" + String(addr));
-		for (int b=0;b<numButtons; b++){
-			Serial.println("  Button: " + String(b+1));//+ "    Address: 0x" + String(addr));
-			for (int i=0; i < strStringsPerButton; i++){
+// void printstrings(){
+	// word addr = strAddrStart;
+	// char str[32];
+	// for (int p =0; p < numPages; p++){
+		// Serial.println("Page: " + String(p+1));// + "    Address: 0x" + String(addr));
+		// for (int b=0;b<numButtons; b++){
+			// Serial.println("  Button: " + String(b+1));//+ "    Address: 0x" + String(addr));
+			// for (int i=0; i < strStringsPerButton; i++){
 				
-				eep.read(addr, str, strBytesPerString);
-				Serial.println(str);
-				addr += strBytesPerString;
-			}
-		}
-	}
-}
+				// eep.read(addr, str, strBytesPerString);
+				// Serial.println(str);
+				// addr += strBytesPerString;
+			// }
+		// }
+	// }
+// }
 
-void bulkFillStrings(){
-	char str[32];
-	for (int p =1; p <= numPages; p++){
-		//Serial.println("Page: " + String(p+1) + "    Address: 0x" + String(addr));
-		for (int b=1;b<=numButtons; b++){
-			//Serial.println("  Button: " + String(b+1)+ "    Address: 0x" + String(addr));
-			for (int i=1; i <= strStringsPerButton; i++){
-				sprintf(str, "Button %i-%i-%i",p,b,i );
-				//Serial.println(str);
-				//str = "Button " + String(p) + "-" + String(b) + "-" + String(i);
-				setString(p,b,i,str);
-			}
-		}
-	}
-}
+// void bulkFillStrings(){
+	// char str[32];
+	// for (int p =1; p <= numPages; p++){
+		// Serial.println("Page: " + String(p+1) + "    Address: 0x" + String(addr));
+		// for (int b=1;b<=numButtons; b++){
+			// Serial.println("  Button: " + String(b+1)+ "    Address: 0x" + String(addr));
+			// for (int i=1; i <= strStringsPerButton; i++){
+				// sprintf(str, "Button %i-%i-%i",p,b,i );
+				// Serial.println(str);
+				// str = "Button " + String(p) + "-" + String(b) + "-" + String(i);
+				// setString(p,b,i,str);
+			// }
+		// }
+	// }
+// }
 
 void flushActions(){
 	for (word faddr = 0; faddr < (strAddrStart -16); faddr += 16){
@@ -488,9 +201,75 @@ void flushActions(){
 
 }
 
+void configure(){
+	/* 
+	================================
+	Paste from spreadsheet here	
+	================================
+	*/
+	eep.write(4608,"Button One\0",32);
+eep.write(4640,"Action\0",32);
+actionWrite(0, 0x0300450000000000);
+actionWrite(8, 0x00FF000000000000);
+actionWrite(16, 0x00FF000000000000);
+actionWrite(24, 0x00FF000000000000);
+actionWrite(32, 0x00FF000000000000);
+actionWrite(40, 0x00FF000000000000);
+
+eep.write(4672,"Button 2\0",32);
+eep.write(4704,"Baby\0",32);
+actionWrite(48, 0x0102000000000000);
+actionWrite(56, 0x00FF000000000000);
+actionWrite(64, 0x00FF000000000000);
+actionWrite(72, 0x00FF000000000000);
+actionWrite(80, 0x00FF000000000000);
+actionWrite(88, 0x00FF000000000000);
+
+eep.write(4736,"Button 3\0",32);
+eep.write(4768,"Yeah!\0",32);
+actionWrite(96, 0x03002C0000000000);
+actionWrite(104, 0x00FF000000000000);
+actionWrite(112, 0x00FF000000000000);
+actionWrite(120, 0x00FF000000000000);
+actionWrite(128, 0x00FF000000000000);
+actionWrite(136, 0x00FF000000000000);
+
+eep.write(4800,"Button 4\0",32);
+eep.write(4832,"More?\0",32);
+actionWrite(144, 0x0100040000000000);
+actionWrite(152, 0x00FF000000000000);
+actionWrite(160, 0x00FF000000000000);
+actionWrite(168, 0x00FF000000000000);
+actionWrite(176, 0x00FF000000000000);
+actionWrite(184, 0x00FF000000000000);
+
+eep.write(4864,"Button 5\0",32);
+eep.write(4896,"Am Ded\0",32);
+actionWrite(192, 0x0200030000000000);
+actionWrite(200, 0x00FF000000000000);
+actionWrite(208, 0x00FF000000000000);
+actionWrite(216, 0x00FF000000000000);
+actionWrite(224, 0x00FF000000000000);
+actionWrite(232, 0x00FF000000000000);
+
+eep.write(4928,"Button 6\0",32);
+eep.write(4960,"Oh Heck\0",32);
+actionWrite(240, 0x0100060000000000);
+actionWrite(248, 0x00FF000000000000);
+actionWrite(256, 0x00FF000000000000);
+actionWrite(264, 0x00FF000000000000);
+actionWrite(272, 0x00FF000000000000);
+actionWrite(280, 0x00FF000000000000);
+	
+}
 const byte btnStart = 6;              //start button
 
 uint32_t addr = 0;
+
+void actionWrite(word memAddr, uint64_t action){
+	uint64_t buffer = __builtin_bswap64(action);
+	eep.write(memAddr, (byte *)&buffer, 8);
+}
 
 void setup(void)
 {
@@ -511,26 +290,17 @@ void setup(void)
 	printDisplays(1,"Press button", "to start");
 	while (digitalRead(btnStart) == HIGH) delay(10);    //wait for button push
 
-	readConfig();
-	//Loop through pages
-	for (p=1; p<=numPaged; p++){
-		printDisplays(1,"Programming page", String(p));
-		//Loop through display
-		for (d=1, d<=numDisplays; d++){
-			setString(p,d,1, d[p][d][1]); // set display line 1
-			setString(p,d,2, d[p][d][2]); // set display line 2
-		}
-		
-		//Loop through button actions
-		for (a=1; a<=numActions; a++){
-			setButton(p, b, a, b[p][b][a]);
-		}
+	configure();
 
-	}
+
+
+
 	
 	printDisplays(1,"Programming", "Complete");
 
 }
 
 void loop(){
+	
+
 }
