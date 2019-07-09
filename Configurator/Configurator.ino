@@ -207,7 +207,7 @@ void configure(){
 	Paste from spreadsheet here	
 	================================
 	*/
-	eep.write(4608,"Button One\0",32);
+eep.write(4608,"Button 1\0",32);
 eep.write(4640,"Action\0",32);
 actionWrite(0, 0x0300450000000000);
 actionWrite(8, 0x00FF000000000000);
@@ -224,6 +224,7 @@ actionWrite(64, 0x00FF000000000000);
 actionWrite(72, 0x00FF000000000000);
 actionWrite(80, 0x00FF000000000000);
 actionWrite(88, 0x00FF000000000000);
+
 
 eep.write(4736,"Button 3\0",32);
 eep.write(4768,"Yeah!\0",32);
@@ -260,6 +261,119 @@ actionWrite(256, 0x00FF000000000000);
 actionWrite(264, 0x00FF000000000000);
 actionWrite(272, 0x00FF000000000000);
 actionWrite(280, 0x00FF000000000000);
+
+
+eep.write(4896,"Button 1\0",32);
+eep.write(4928,"Action\0",32);
+actionWrite(288, 0x0300450000000000);
+actionWrite(296, 0x00FF000000000000);
+actionWrite(304, 0x00FF000000000000);
+actionWrite(312, 0x00FF000000000000);
+actionWrite(320, 0x00FF000000000000);
+actionWrite(328, 0x00FF000000000000);
+
+eep.write(4960,"Button 2\0",32);
+eep.write(4992,"Baby\0",32);
+actionWrite(336, 0x0102000000000000);
+actionWrite(344, 0x00FF000000000000);
+actionWrite(352, 0x00FF000000000000);
+actionWrite(360, 0x00FF000000000000);
+actionWrite(368, 0x00FF000000000000);
+actionWrite(376, 0x00FF000000000000);
+
+
+eep.write(5024,"Button 3\0",32);
+eep.write(5056,"Yeah!\0",32);
+actionWrite(384, 0x03002C0000000000);
+actionWrite(392, 0x00FF000000000000);
+actionWrite(400, 0x00FF000000000000);
+actionWrite(408, 0x00FF000000000000);
+actionWrite(416, 0x00FF000000000000);
+actionWrite(424, 0x00FF000000000000);
+
+eep.write(5088,"Button 4\0",32);
+eep.write(5120,"More?\0",32);
+actionWrite(432, 0x0100040000000000);
+actionWrite(440, 0x00FF000000000000);
+actionWrite(448, 0x00FF000000000000);
+actionWrite(456, 0x00FF000000000000);
+actionWrite(464, 0x00FF000000000000);
+actionWrite(472, 0x00FF000000000000);
+
+eep.write(5152,"Button 5\0",32);
+eep.write(5184,"Am Ded\0",32);
+actionWrite(480, 0x0200030000000000);
+actionWrite(488, 0x00FF000000000000);
+actionWrite(496, 0x00FF000000000000);
+actionWrite(504, 0x00FF000000000000);
+actionWrite(512, 0x00FF000000000000);
+actionWrite(520, 0x00FF000000000000);
+
+eep.write(5216,"Button 6\0",32);
+eep.write(5248,"Oh Heck\0",32);
+actionWrite(528, 0x0100060000000000);
+actionWrite(536, 0x00FF000000000000);
+actionWrite(544, 0x00FF000000000000);
+actionWrite(552, 0x00FF000000000000);
+actionWrite(560, 0x00FF000000000000);
+actionWrite(568, 0x00FF000000000000);
+
+eep.write(5184,"Button 1\0",32);
+eep.write(5216,"Action\0",32);
+actionWrite(576, 0x0300450000000000);
+actionWrite(584, 0x00FF000000000000);
+actionWrite(592, 0x00FF000000000000);
+actionWrite(600, 0x00FF000000000000);
+actionWrite(608, 0x00FF000000000000);
+actionWrite(616, 0x00FF000000000000);
+
+eep.write(5248,"Button 2\0",32);
+eep.write(5280,"Baby\0",32);
+actionWrite(624, 0x0102000000000000);
+actionWrite(632, 0x00FF000000000000);
+actionWrite(640, 0x00FF000000000000);
+actionWrite(648, 0x00FF000000000000);
+actionWrite(656, 0x00FF000000000000);
+actionWrite(664, 0x00FF000000000000);
+
+
+eep.write(5312,"Button 3\0",32);
+eep.write(5344,"Yeah!\0",32);
+actionWrite(672, 0x03002C0000000000);
+actionWrite(680, 0x00FF000000000000);
+actionWrite(688, 0x00FF000000000000);
+actionWrite(696, 0x00FF000000000000);
+actionWrite(704, 0x00FF000000000000);
+actionWrite(712, 0x00FF000000000000);
+
+eep.write(5376,"Button 4\0",32);
+eep.write(5408,"More?\0",32);
+actionWrite(720, 0x0100040000000000);
+actionWrite(728, 0x00FF000000000000);
+actionWrite(736, 0x00FF000000000000);
+actionWrite(744, 0x00FF000000000000);
+actionWrite(752, 0x00FF000000000000);
+actionWrite(760, 0x00FF000000000000);
+
+eep.write(5440,"Button 5\0",32);
+eep.write(5472,"Am Ded\0",32);
+actionWrite(768, 0x0200030000000000);
+actionWrite(776, 0x00FF000000000000);
+actionWrite(784, 0x00FF000000000000);
+actionWrite(792, 0x00FF000000000000);
+actionWrite(800, 0x00FF000000000000);
+actionWrite(808, 0x00FF000000000000);
+
+eep.write(5504,"Button 6\0",32);
+eep.write(5536,"Oh Heck\0",32);
+actionWrite(816, 0x0100060000000000);
+actionWrite(824, 0x00FF000000000000);
+actionWrite(832, 0x00FF000000000000);
+actionWrite(840, 0x00FF000000000000);
+actionWrite(848, 0x00FF000000000000);
+actionWrite(856, 0x00FF000000000000);
+
+
 	
 }
 const byte btnStart = 6;              //start button

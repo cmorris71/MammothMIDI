@@ -12,6 +12,7 @@ extern void midiPC(int songNumber, int midiChannel);
 extern void midiCC(int midiController, int midiValue, int midiChannel);
 extern void getConfig();
 
+
 typedef void (*function) ();
 
 
@@ -40,7 +41,7 @@ void s2_s3() {
 };
 
 void s4_s5() {
-  if (page > 0) page--;
+  if (page > 1) page--;
 
 //  clickActions[page][0]();
 //
@@ -50,7 +51,7 @@ void s4_s5() {
 };
 
 void s5_s6() {
-  if (page<12) page++;
+  if (page<6) page++;
 
 //  clickActions[page][0]();
 //  updateDisplays();
@@ -98,3 +99,5 @@ function doubleActions[7][7] {
 };
 
 function holdActions[7] {NULL, holdS1, holdS2, holdS3, holdS4, holdS5, holdS6};
+
+
