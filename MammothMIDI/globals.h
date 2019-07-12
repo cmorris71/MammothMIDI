@@ -21,6 +21,21 @@ const int  bytesPerString       = 32;
 const int  stringBytesPerButton = stringsPerButton * bytesPerString;
 const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
 
+const byte numChars = 32;
+char receivedChars[numChars];
+char tempChars[numChars];        // temporary array for use when parsing
+char dataString[32];
+
+// variables to hold the parsed data
+word addr;
+byte data[32];
+
+int dataLength;
+
+boolean newData = false;
+
+bool progMode = false;
+
 
 const bool debug = false;
 

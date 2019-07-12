@@ -11,6 +11,8 @@ extern void sendSong();
 extern void midiPC(int songNumber, int midiChannel);
 extern void midiCC(int midiController, int midiValue, int midiChannel);
 extern void getConfig();
+extern void writeConfig();
+extern void printDisplays(int d, char str1[16], char str2[16]);
 
 
 typedef void (*function) ();
@@ -28,6 +30,18 @@ void s1_s2() {
   }
   if (debug)Serial.println("Song :" + String(song));
   sendSong();
+
+};
+
+void s1_s6() {
+//writeConfig();
+progMode = !progMode;
+if (progMode){
+	printDisplays(1,"Writing", "Config");
+	}else{
+	printDisplays(1,"Exiting", "Config");
+	getConfig();
+	}
 
 };
 
@@ -91,11 +105,11 @@ void holdS6() {
 
 function doubleActions[7][7] {
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL},
-  { NULL, NULL, s1_s2, NULL, NULL, NULL, NULL},
+  { NULL, NULL, s1_s2, NULL, NULL, NULL, s1_s6},
   { NULL, NULL, NULL, s2_s3, NULL, NULL, NULL},
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL},
   { NULL, NULL, NULL, NULL, NULL, s4_s5, NULL},
-  { NULL, NULL, NULL, NULL, NULL, NULL, s5_s6}
+  { NULL, s1_s6, NULL, NULL, NULL, NULL, s5_s6}
 };
 
 function holdActions[7] {NULL, holdS1, holdS2, holdS3, holdS4, holdS5, holdS6};

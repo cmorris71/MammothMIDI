@@ -10,6 +10,7 @@ MIDI commands wern't being sent. verify WhichSwitch and midiPC/CC are working
 #include <extEEPROM.h>    //https://github.com/PaoloP74/extEEPROM
 #include "globals.h"
 #include "config.h"
+#include <SoftwareSerial.h>
 
 /*
 WIRING INSTRUCTIONS
@@ -24,10 +25,12 @@ const byte btnProgram = 4; //button to write configuration to EEPROM
 //Setup external 24LC256 EEPROMs on the bus
 extEEPROM eep(kbits_256, 1, 64);         //device size, number of devices, page size
 
+SoftwareSerial softSerial(2, 11); // RX, TX
 
 
 // Create and bind the MIDI interface to the default hardware Serial port
-MIDI_CREATE_DEFAULT_INSTANCE();
+//MIDI_CREATE_DEFAULT_INSTANCE();
+MIDI_CREATE_INSTANCE(SoftwareSerial, softSerial, MIDI);
 
 // Setup encoder. Best to use interrupt pins
 // Encoder myEnc(2, 3);
@@ -43,6 +46,12 @@ void actionWrite(word memAddr, uint64_t action){
 	eep.write(memAddr, (byte *)&buffer, 8);
 }
 
+void serialToEEPROM(){
+    Serial.print("Printing: ");
+	Serial.println(dataString);
+	delay(25);
+	eep.write(addr, dataString,32);
+	}
 
 void writeConfig(){
 	/* 
@@ -53,336 +62,26 @@ void writeConfig(){
 	
 	printDisplays(1,"Writing", "Config");
 	
-eep.write(4608,"Test\0",32);
-eep.write(4640,"1\0",32);
-actionWrite(0, 0x03000B0000000000);
-actionWrite(8, 0x00FF000000000000);
-actionWrite(16, 0x00FF000000000000);
-actionWrite(24, 0x00FF000000000000);
-actionWrite(32, 0x00FF000000000000);
-actionWrite(40, 0x00FF000000000000);
+	eep.write(4608,"Test\0",32);
+	eep.write(4640,"1\0",32);
+	actionWrite(0, 0x03000B0000000000);
+	actionWrite(8, 0x03000C0000000000);
+	actionWrite(16, 0x03000D0000000000);
+	actionWrite(24, 0x03000E0000000000);
+	actionWrite(32, 0x03000F0000000000);
+	actionWrite(40, 0x0300100000000000);
 
-eep.write(4672,"Button 2\0",32);
-eep.write(4704,"Baby\0",32);
-actionWrite(48, 0x01000C0000000000);
-actionWrite(56, 0x00FF0C000C010000);
-actionWrite(64, 0x00FF000000000000);
-actionWrite(72, 0x00FF000000000000);
-actionWrite(80, 0x00FF000000000000);
-actionWrite(88, 0x00FF000000000000);
-
-
-eep.write(4736,"Button 3\0",32);
-eep.write(4768,"Yeah!\0",32);
-actionWrite(96, 0x03000D0000000000);
-actionWrite(104, 0x00FF000000000000);
-actionWrite(112, 0x00FF000000000000);
-actionWrite(120, 0x00FF000000000000);
-actionWrite(128, 0x00FF000000000000);
-actionWrite(136, 0x00FF000000000000);
-
-eep.write(4800,"Button 4\0",32);
-eep.write(4832,"More?\0",32);
-actionWrite(144, 0x01000E0000000000);
-actionWrite(152, 0x00FF000000000000);
-actionWrite(160, 0x00FF000000000000);
-actionWrite(168, 0x00FF000000000000);
-actionWrite(176, 0x00FF000000000000);
-actionWrite(184, 0x00FF000000000000);
-
-eep.write(4864,"Button 5\0",32);
-eep.write(4896,"Am Ded\0",32);
-actionWrite(192, 0x02000F0000000000);
-actionWrite(200, 0x00FF000000000000);
-actionWrite(208, 0x00FF000000000000);
-actionWrite(216, 0x00FF000000000000);
-actionWrite(224, 0x00FF000000000000);
-actionWrite(232, 0x00FF000000000000);
-
-eep.write(4928,"Button 6\0",32);
-eep.write(4960,"Oh Heck\0",32);
-actionWrite(240, 0x0100100000000000);
-actionWrite(248, 0x00FF000000000000);
-actionWrite(256, 0x00FF000000000000);
-actionWrite(264, 0x00FF000000000000);
-actionWrite(272, 0x00FF000000000000);
-actionWrite(280, 0x00FF000000000000);
+	eep.write(4672,"Button 2\0",32);
+	eep.write(4704,"Baby\0",32);
+	actionWrite(48, 0x01000C0000000000);
+	actionWrite(56, 0x00FF0C000C010000);
+	actionWrite(64, 0x00FF000000000000);
+	actionWrite(72, 0x00FF000000000000);
+	actionWrite(80, 0x00FF000000000000);
+	actionWrite(88, 0x00FF000000000000);
 
 
-eep.write(4992,"Page\0",32);
-eep.write(5024,"2\0",32);
-actionWrite(288, 0x0300150000000000);
-actionWrite(296, 0x00FF000000000000);
-actionWrite(304, 0x00FF000000000000);
-actionWrite(312, 0x00FF000000000000);
-actionWrite(320, 0x00FF000000000000);
-actionWrite(328, 0x00FF000000000000);
 
-eep.write(5056,"Button 2\0",32);
-eep.write(5088,"Baby\0",32);
-actionWrite(336, 0x0100160000000000);
-actionWrite(344, 0x00FF000000000000);
-actionWrite(352, 0x00FF000000000000);
-actionWrite(360, 0x00FF000000000000);
-actionWrite(368, 0x00FF000000000000);
-actionWrite(376, 0x00FF000000000000);
-
-
-eep.write(5120,"Button 3\0",32);
-eep.write(5152,"Yeah!\0",32);
-actionWrite(384, 0x0300170000000000);
-actionWrite(392, 0x00FF000000000000);
-actionWrite(400, 0x00FF000000000000);
-actionWrite(408, 0x00FF000000000000);
-actionWrite(416, 0x00FF000000000000);
-actionWrite(424, 0x00FF000000000000);
-
-eep.write(5184,"Button 4\0",32);
-eep.write(5216,"More?\0",32);
-actionWrite(432, 0x0100180000000000);
-actionWrite(440, 0x00FF000000000000);
-actionWrite(448, 0x00FF000000000000);
-actionWrite(456, 0x00FF000000000000);
-actionWrite(464, 0x00FF000000000000);
-actionWrite(472, 0x00FF000000000000);
-
-eep.write(5248,"Button 5\0",32);
-eep.write(5280,"Am Ded\0",32);
-actionWrite(480, 0x0200190000000000);
-actionWrite(488, 0x00FF000000000000);
-actionWrite(496, 0x00FF000000000000);
-actionWrite(504, 0x00FF000000000000);
-actionWrite(512, 0x00FF000000000000);
-actionWrite(520, 0x00FF000000000000);
-
-eep.write(5312,"Button 6\0",32);
-eep.write(5344,"Oh Heck\0",32);
-actionWrite(528, 0x01001A0000000000);
-actionWrite(536, 0x00FF000000000000);
-actionWrite(544, 0x00FF000000000000);
-actionWrite(552, 0x00FF000000000000);
-actionWrite(560, 0x00FF000000000000);
-actionWrite(568, 0x00FF000000000000);
-
-eep.write(5376,"Page\0",32);
-eep.write(5408,"3\0",32);
-actionWrite(576, 0x0300450000000000);
-actionWrite(584, 0x00FF000000000000);
-actionWrite(592, 0x00FF000000000000);
-actionWrite(600, 0x00FF000000000000);
-actionWrite(608, 0x00FF000000000000);
-actionWrite(616, 0x00FF000000000000);
-
-eep.write(5440,"Button 2\0",32);
-eep.write(5472,"Baby\0",32);
-actionWrite(624, 0x0102000000000000);
-actionWrite(632, 0x00FF000000000000);
-actionWrite(640, 0x00FF000000000000);
-actionWrite(648, 0x00FF000000000000);
-actionWrite(656, 0x00FF000000000000);
-actionWrite(664, 0x00FF000000000000);
-
-
-eep.write(5504,"Button 3\0",32);
-eep.write(5536,"Yeah!\0",32);
-actionWrite(672, 0x03002C0000000000);
-actionWrite(680, 0x00FF000000000000);
-actionWrite(688, 0x00FF000000000000);
-actionWrite(696, 0x00FF000000000000);
-actionWrite(704, 0x00FF000000000000);
-actionWrite(712, 0x00FF000000000000);
-
-eep.write(5568,"Button 4\0",32);
-eep.write(5600,"More?\0",32);
-actionWrite(720, 0x0100040000000000);
-actionWrite(728, 0x00FF000000000000);
-actionWrite(736, 0x00FF000000000000);
-actionWrite(744, 0x00FF000000000000);
-actionWrite(752, 0x00FF000000000000);
-actionWrite(760, 0x00FF000000000000);
-
-eep.write(5632,"Button 5\0",32);
-eep.write(5664,"Am Ded\0",32);
-actionWrite(768, 0x0200030000000000);
-actionWrite(776, 0x00FF000000000000);
-actionWrite(784, 0x00FF000000000000);
-actionWrite(792, 0x00FF000000000000);
-actionWrite(800, 0x00FF000000000000);
-actionWrite(808, 0x00FF000000000000);
-
-eep.write(5696,"Button 6\0",32);
-eep.write(5728,"Oh Heck\0",32);
-actionWrite(816, 0x0100060000000000);
-actionWrite(824, 0x00FF000000000000);
-actionWrite(832, 0x00FF000000000000);
-actionWrite(840, 0x00FF000000000000);
-actionWrite(848, 0x00FF000000000000);
-actionWrite(856, 0x00FF000000000000);
-
-eep.write(5760,"Page\0",32);
-eep.write(5792,"4\0",32);
-actionWrite(864, 0x0300450000000000);
-actionWrite(872, 0x00FF000000000000);
-actionWrite(880, 0x00FF000000000000);
-actionWrite(888, 0x00FF000000000000);
-actionWrite(896, 0x00FF000000000000);
-actionWrite(904, 0x00FF000000000000);
-
-eep.write(5824,"Button 2\0",32);
-eep.write(5856,"Baby\0",32);
-actionWrite(912, 0x0102000000000000);
-actionWrite(920, 0x00FF000000000000);
-actionWrite(928, 0x00FF000000000000);
-actionWrite(936, 0x00FF000000000000);
-actionWrite(944, 0x00FF000000000000);
-actionWrite(952, 0x00FF000000000000);
-
-
-eep.write(5888,"Button 3\0",32);
-eep.write(5920,"Yeah!\0",32);
-actionWrite(960, 0x03002C0000000000);
-actionWrite(968, 0x00FF000000000000);
-actionWrite(976, 0x00FF000000000000);
-actionWrite(984, 0x00FF000000000000);
-actionWrite(992, 0x00FF000000000000);
-actionWrite(1000, 0x00FF000000000000);
-
-eep.write(5952,"Button 4\0",32);
-eep.write(5984,"More?\0",32);
-actionWrite(1008, 0x0100040000000000);
-actionWrite(1016, 0x00FF000000000000);
-actionWrite(1024, 0x00FF000000000000);
-actionWrite(1032, 0x00FF000000000000);
-actionWrite(1040, 0x00FF000000000000);
-actionWrite(1048, 0x00FF000000000000);
-
-eep.write(6016,"Button 5\0",32);
-eep.write(6048,"Am Ded\0",32);
-actionWrite(1056, 0x0200030000000000);
-actionWrite(1064, 0x00FF000000000000);
-actionWrite(1072, 0x00FF000000000000);
-actionWrite(1080, 0x00FF000000000000);
-actionWrite(1088, 0x00FF000000000000);
-actionWrite(1096, 0x00FF000000000000);
-
-eep.write(6080,"Button 6\0",32);
-eep.write(6112,"Oh Heck\0",32);
-actionWrite(1104, 0x0100060000000000);
-actionWrite(1112, 0x00FF000000000000);
-actionWrite(1120, 0x00FF000000000000);
-actionWrite(1128, 0x00FF000000000000);
-actionWrite(1136, 0x00FF000000000000);
-actionWrite(1144, 0x00FF000000000000);
-
-eep.write(6144,"Page\0",32);
-eep.write(6176,"5\0",32);
-actionWrite(1152, 0x0300450000000000);
-actionWrite(1160, 0x00FF000000000000);
-actionWrite(1168, 0x00FF000000000000);
-actionWrite(1176, 0x00FF000000000000);
-actionWrite(1184, 0x00FF000000000000);
-actionWrite(1192, 0x00FF000000000000);
-
-eep.write(6208,"Button 2\0",32);
-eep.write(6240,"Baby\0",32);
-actionWrite(1200, 0x0102000000000000);
-actionWrite(1208, 0x00FF000000000000);
-actionWrite(1216, 0x00FF000000000000);
-actionWrite(1224, 0x00FF000000000000);
-actionWrite(1232, 0x00FF000000000000);
-actionWrite(1240, 0x00FF000000000000);
-
-
-eep.write(6272,"Button 3\0",32);
-eep.write(6304,"Yeah!\0",32);
-actionWrite(1248, 0x03002C0000000000);
-actionWrite(1256, 0x00FF000000000000);
-actionWrite(1264, 0x00FF000000000000);
-actionWrite(1272, 0x00FF000000000000);
-actionWrite(1280, 0x00FF000000000000);
-actionWrite(1288, 0x00FF000000000000);
-
-eep.write(6336,"Button 4\0",32);
-eep.write(6368,"More?\0",32);
-actionWrite(1296, 0x0100040000000000);
-actionWrite(1304, 0x00FF000000000000);
-actionWrite(1312, 0x00FF000000000000);
-actionWrite(1320, 0x00FF000000000000);
-actionWrite(1328, 0x00FF000000000000);
-actionWrite(1336, 0x00FF000000000000);
-
-eep.write(6400,"Button 5\0",32);
-eep.write(6432,"Am Ded\0",32);
-actionWrite(1344, 0x0200030000000000);
-actionWrite(1352, 0x00FF000000000000);
-actionWrite(1360, 0x00FF000000000000);
-actionWrite(1368, 0x00FF000000000000);
-actionWrite(1376, 0x00FF000000000000);
-actionWrite(1384, 0x00FF000000000000);
-
-eep.write(6464,"Button 6\0",32);
-eep.write(6496,"Oh Heck\0",32);
-actionWrite(1392, 0x0100060000000000);
-actionWrite(1400, 0x00FF000000000000);
-actionWrite(1408, 0x00FF000000000000);
-actionWrite(1416, 0x00FF000000000000);
-actionWrite(1424, 0x00FF000000000000);
-actionWrite(1432, 0x00FF000000000000);
-
-eep.write(6528,"Page\0",32);
-eep.write(6560,"6\0",32);
-actionWrite(1440, 0x0300450000000000);
-actionWrite(1448, 0x00FF000000000000);
-actionWrite(1456, 0x00FF000000000000);
-actionWrite(1464, 0x00FF000000000000);
-actionWrite(1472, 0x00FF000000000000);
-actionWrite(1480, 0x00FF000000000000);
-
-eep.write(6592,"Button\0",32);
-eep.write(6624,"2\0",32);
-actionWrite(1488, 0x0102000000000000);
-actionWrite(1496, 0x00FF000000000000);
-actionWrite(1504, 0x00FF000000000000);
-actionWrite(1512, 0x00FF000000000000);
-actionWrite(1520, 0x00FF000000000000);
-actionWrite(1528, 0x00FF000000000000);
-
-
-eep.write(6656,"Button 3\0",32);
-eep.write(6688,"Yeah!\0",32);
-actionWrite(1536, 0x03002C0000000000);
-actionWrite(1544, 0x00FF000000000000);
-actionWrite(1552, 0x00FF000000000000);
-actionWrite(1560, 0x00FF000000000000);
-actionWrite(1568, 0x00FF000000000000);
-actionWrite(1576, 0x00FF000000000000);
-
-eep.write(6720,"Button 4\0",32);
-eep.write(6752,"More?\0",32);
-actionWrite(1584, 0x0100040000000000);
-actionWrite(1592, 0x00FF000000000000);
-actionWrite(1600, 0x00FF000000000000);
-actionWrite(1608, 0x00FF000000000000);
-actionWrite(1616, 0x00FF000000000000);
-actionWrite(1624, 0x00FF000000000000);
-
-eep.write(6784,"Button 5\0",32);
-eep.write(6816,"Am Ded\0",32);
-actionWrite(1632, 0x0200030000000000);
-actionWrite(1640, 0x00FF000000000000);
-actionWrite(1648, 0x00FF000000000000);
-actionWrite(1656, 0x00FF000000000000);
-actionWrite(1664, 0x00FF000000000000);
-actionWrite(1672, 0x00FF000000000000);
-
-eep.write(6848,"Button 6\0",32);
-eep.write(6880,"Oh Heck\0",32);
-actionWrite(1680, 0x0100060000000000);
-actionWrite(1688, 0x00FF000000000000);
-actionWrite(1696, 0x00FF000000000000);
-actionWrite(1704, 0x00FF000000000000);
-actionWrite(1712, 0x00FF000000000000);
-actionWrite(1720, 0x00FF000000000000);
 
 	printDisplays(1,"Whew!", "Done");
 	
@@ -604,20 +303,105 @@ void midiPC(int songNumber, int midiChannel) {
 }
 void midiCC(int midiControler, int midiValue, int midiChannel) {
 	//if (debug Serial.println("Executing MIDI CC command");
-	if(!debug)MIDI.sendControlChange(midiControler, midiValue, midiChannel);
+	if(!debug) MIDI.sendControlChange(midiControler, midiValue, midiChannel);
 }
 
+void recvWithStartEndMarkers() {
+	static boolean recvInProgress = false;
+	static byte ndx = 0;
+	char startMarker = '<';
+	char endMarker = '>';
+	char rc;
 
+	while (Serial.available() > 0 && newData == false) {
+		rc = Serial.read();
+
+		if (recvInProgress == true) {
+			if (rc != endMarker) {
+				receivedChars[ndx] = rc;
+				ndx++;
+				if (ndx >= numChars) {
+					ndx = numChars - 1;
+				}
+			}
+			else {
+					receivedChars[ndx] = '\0'; // terminate the string
+				recvInProgress = false;
+				ndx = 0;
+				newData = true;
+			}
+		}
+
+		else if (rc == startMarker) {
+			recvInProgress = true;
+		}
+	}
+}
+
+//============
+
+void parseData() {      // split the data into its parts
+
+	char * strtokIndx; // this is used by strtok() as an index
+
+	strtokIndx = strtok(tempChars,",");      // get the first part - the string
+	addr = atoi(strtokIndx); // copy it to addr
+	
+	byte index = 0;
+	
+	if (addr >= stringAddrStart){
+			strtokIndx = strtok(NULL, ",");
+			strcpy(dataString, strtokIndx);
+			index++;
+		
+	}else{
+		strtokIndx = strtok(NULL, ",");
+		while(strtokIndx != NULL){
+			data[index]  = (byte)atoi(strtokIndx);
+			index++;			
+			strtokIndx = strtok(NULL, ",");
+		}
+	}
+	
+	
+	dataLength = index;
+
+	// strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+	// integerFromPC = atoi(strtokIndx);     // convert this part to an integer
+
+	// strtokIndx = strtok(NULL, ",");
+	// floatFromPC = atof(strtokIndx);     // convert this part to a float
+
+}
+
+//============
+
+void showParsedData() {
+	Serial.println(" ");
+	Serial.print("Message ");
+	Serial.println(String(addr));
+	Serial.print("Data ");
+	if (addr >= stringAddrStart){
+		Serial.println(dataString);
+	}else{
+		for (int i=0; i<dataLength; i++){
+			Serial.print(String(data[i]));
+		}
+	}
+
+	Serial.println(" ");
+		
+}
 
 void setup() {
 	// ========= Program Button Stup =============
-	pinMode(btnProgram, INPUT_PULLUP);
+	//pinMode(btnProgram, INPUT_PULLUP);
 
 
 
 	// ========= Foot Switch Button Setup =========
-	for (int i = 0; i < 8; i++) {
-		pinMode(5 + i, INPUT_PULLUP);
+	for (int i = 0; i <= 6; i++) {
+		pinMode(4 + i, INPUT_PULLUP);
 		footSwitch[i].setActiveLogic(LOW);
 		footSwitch[i].disableDoubleClick();
 		footSwitch[i].setHoldTime(500);
@@ -626,14 +410,15 @@ void setup() {
 	MIDI.begin(MIDI_CHANNEL_OFF);
 
 	//setup serial port for monitoring
-	if (debug){
-		Serial.begin(9600); //for serial monitoring
-	}else{
-		Serial.begin(31250); //for serial MIDI commands
-	}
+
+	Serial.begin(9600); //for serial monitoring
+
+	//softSerial.begin(31250); //for serial MIDI commands
+	
 
 
-	while (! Serial); // Wait untilSerial is ready - Leonardo
+	//while (! Serial); // Wait untilSerial is ready - Leonardo
+
 
 	//setup i2c eeprom connection
 	byte eepStatus = eep.begin(eep.twiClock400kHz);   //go fast!
@@ -678,7 +463,7 @@ void loop() {
 	------------------------------------------------------------------------------*/
 	// DETERMINE NUMBER OF ACTIVE BUTTONS
 	active = 0;
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i <= 6; i++)
 	{
 		footSwitch[i].update();
 		if (footSwitch[i].isActive())
@@ -712,7 +497,7 @@ void loop() {
 	//DETECT STATE WHERE ACTIVITY IS IN PROGRESS
 	if (state == PRE_BUTTON_STATE)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i <= 6; i++)
 		{
 			if (footSwitch[i].isHeld())
 			{
@@ -727,7 +512,7 @@ void loop() {
 	//DETECT STATE WHERE ONE BUTTON HAS BEEN PRESSED
 	if (state == PRE_BUTTON_STATE and active == 0)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i <= 6; i++)
 		{
 			if (footSwitch[i].isReleased())
 			{
@@ -739,7 +524,7 @@ void loop() {
 		}
 	}
 	
-	if (digitalRead(btnProgram) == LOW) writeConfig();
+	//if (digitalRead(btnProgram) == LOW) writeConfig();
 	
 	// =============== Encoder ============
 	// long newPosition = myEnc.read();
@@ -752,4 +537,17 @@ void loop() {
 	// updateDisplay(0);
 	// if (debug Serial.println(newPosition);
 	// }
+	
+	if (progMode){
+		recvWithStartEndMarkers();
+		if (newData == true) {
+			strcpy(tempChars, receivedChars);
+			// this temporary copy is necessary to protect the original data
+			//   because strtok() used in parseData() replaces the commas with \0
+			parseData();
+			//showParsedData();
+			serialToEEPROM();
+			newData = false;
+		}
+	}
 }
