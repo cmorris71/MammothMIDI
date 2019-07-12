@@ -22,7 +22,7 @@ const int  stringBytesPerButton = stringsPerButton * bytesPerString;
 const int  stringBytesPerPage   = stringBytesPerButton * NUMBER_OF_BUTTONS;
 
 
-const bool debug = true;
+const bool debug = false;
 
 char displays[6][2][32];
 

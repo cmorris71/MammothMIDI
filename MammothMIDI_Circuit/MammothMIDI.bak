@@ -395,17 +395,6 @@ Connection ~ 7650 4650
 Wire Wire Line
 	7650 4650 7650 4700
 $Comp
-L Switch:SW_Push_SPDT SW?
-U 1 1 5D0F8176
-P 3400 2300
-F 0 "SW?" H 3400 2585 50  0000 C CNN
-F 1 "SW_Push_SPDT" H 3400 2494 50  0000 C CNN
-F 2 "" H 3400 2300 50  0001 C CNN
-F 3 "~" H 3400 2300 50  0001 C CNN
-	1    3400 2300
-	1    0    0    -1  
-$EndComp
-$Comp
 L Switch:SW_SPST SW1
 U 1 1 5D10E802
 P 1150 5000
@@ -573,4 +562,15 @@ Wire Wire Line
 	2750 5200 2750 5350
 Wire Wire Line
 	3150 5200 3150 5350
+$Comp
+L Device:Rotary_Encoder_Switch SW?
+U 1 1 5D14507E
+P 2550 2850
+F 0 "SW?" H 2550 3217 50  0000 C CNN
+F 1 "Rotary_Encoder_Switch" H 2550 3126 50  0000 C CNN
+F 2 "" H 2400 3010 50  0001 C CNN
+F 3 "~" H 2550 3110 50  0001 C CNN
+	1    2550 2850
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
